@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Chatbot - Customer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+    <script src="./customer.js"></script>
+  </head>
+  <body>
+    <div id="zoom">
+      <img id="zoom_image">
+      <button id="close_zoom">X</button>
+    </div>
+    <div id="body">
+      <div id="headerbox">
+        <div class="icon_chat_box" id="icon_chat_box" rel="1">
+          <img class="image" src="https://livechat.pavietnam.vn/images/user/4.png">
+          <span id="hello" class="lang">Xin chào </span>
+          <span id="myname"></span>,
+          <br>
+          <span id='question' class='lang'>Quý khách cần hỗ trợ từ vấn dịch vụ?</span>
+          <br>
+          <button name="btnChat" id="open_chat_box" class='lang'> Bắt đầu chat </button>
+        </div>
+        <div class="top" id="top">
+          <div id="open_close">
+            <span id='mess' class='lang'>Tư vấn địch vụ</span>
+            <img id="up_down" class="icon" src="image/up.jpeg">
+          </div>
+        </div>
+      </div>
+      <div id="contentbox">
+        <div id='chat' style='display:none'>
+          <div class=staff_box id='staff'>
+            <img src="https://cdn6.f-cdn.com/contestentries/1476201/32214673/5c7f869653351_thumb900.jpg" class="avatar" id="bot-avatar">
+            <div id="main-avatar" class="avatar"></div>
+            <div>
+              <div class='staff_info' id='staff_info'></div>
+              <div class='staff_info lang' id='staff'>Nhân viên tư vấn</div>
+              <div id="typing">Typing ...</div>
+            </div>
+          </div>
+          <div id="chatbox"></div>
+          <div>
+            <textarea id="message" placeholder="Nhập tin nhắn!" class="input lang"></textarea>
+          </div>
+        </div>
+        <div class="body" id="input_info">
+          <div class=staff_box>
+            <img src="https://livechat.pavietnam.vn/data/42/images/config_chat/5e27f6e66651c.png" class="avatar">
+            <div>
+              <div class="staff_info" id="staff_info">DV ShopHandmade</div>
+              <div class="staff_info">20 Pico Cong Hoa</div>
+            </div>
+          </div>
+          <input type="text" name="fullname" id="fullname" maxlength="50" pattern=".{3,32}" placeholder="Xin vui lòng nhập họ tên" class="input lang" value>
+          <br>
+          <input type="text" name="email" id="email" maxlength="50" pattern=".{3,32}" placeholder="Xin vui lòng nhập địa chỉ email" class="input lang" value>
+          <div id="button">
+          <img src="https://livechat.pavietnam.vn/data/42/images/config_chat/25x25_6094aaf300dd7.png" class="icon_button">
+            <button class="button_chat lang" id='start_chat'>Bắt đầu trao đổi</button>
+          </div>
+        </div>
+      </div>
+      <div id="footer">
+        <img class="icon" src="https://cuulongmotors.com/wp-content/uploads/2021/03/icon-hotline-1.gif">
+        <div class="lang" id="contact">Liên hệ: 123456789</div>
+        <div>
+          <select name="change_language" id="change_language">
+            <option class="lang" id="language" selected disabled> Chọn ngôn ngữ </option>
+            <option class="lang" id="Vi" value="vi">Tiếng Việt</option>
+            <option class="lang" id="Eng" value="en">Tiếng Anh</option>
+          </select>
+        </div>
+        <button id='end_chat' class='lang'>Kết thúc cuộc chat</button>
+      </div>
+    </div>
+  </body>
+</html>

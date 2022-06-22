@@ -1,0 +1,86 @@
+{
+    "hello": {
+        "en": "Hello",
+        "vi": "Xin chào"
+    },
+
+    "question": {
+        "en": "Do you need service consulting support?",
+        "vi": "Quý khách cần hỗ trợ tư vấn dịch vụ?"
+    },
+
+    "staff":{
+        "en": "Staff",
+        "vi": "Nhân viên tư vấn"
+    },
+
+    "mess":{
+        "en": "Consulting Services",
+        "vi": "Tư vấn dịch vụ"
+    },
+
+    "open_chat_box":{
+        "en": "Start chat",
+        "vi": "Bắt đầu chat"
+    },
+
+    "contact":{
+        "en": "Contact: 123456789",
+        "vi": "Liên hệ: 123456789"
+    },
+
+    "Vi":{
+        "en": "Vietnamese",
+        "vi": "Tiếng Việt"
+    },
+
+    "Eng":{
+        "en": "English",
+        "vi": "Tiếng Anh"
+    },
+
+    "message":{
+        "en": "Enter message!",
+        "vi": "Nhập tin nhắn!"
+    },
+
+    "fullname":{
+        "en": "Please enter your full name",
+        "vi": "Xin vui lòng nhập họ tên"
+    },
+
+    "email":{
+        "en": "Please enter your email",
+        "vi": "Xin vui lòng nhập địa chỉ email"
+    },
+
+    "start_chat":{
+        "en": "Start chat",
+        "vi": "Bắt đầu trao đổi"
+    },
+
+    "end_chat":{
+        "en": "End chat",
+        "vi": "Kết thúc cuộc chat"
+    },
+
+    "sign_in":{
+        "en": "Sign in",
+        "vi": "Đăng nhập"
+    },
+
+    "customer":{
+        "en": "Choose customer",
+        "vi": "Chọn khách hàng"
+    },
+
+    "guest":{
+        "en": "Customer",
+        "vi": "Khách hàng"
+    },
+
+    "language":{
+        "en": "Choose language",
+        "vi": "Chọn ngôn ngữ"
+    }
+}

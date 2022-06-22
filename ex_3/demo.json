@@ -1,0 +1,164 @@
+{
+    "scenario_id": "1559123198812",
+    "title": "Welcome",
+    "content": "Quý khách cần mua sản phẩm nào?",
+    "type": "Text",
+    "url": "",
+    "image": "",
+    "file_name": "",
+    "action": "0",
+    "phong_ban": "",
+    "nhan_vien": "",
+    "next_jump": "0",
+    "children": [
+      {
+        "scenario_id": "1559124303469813",
+        "title": "mua samsung",
+        "content": "Tôi cần mua điện thoại SamSung",
+        "type": "Button",
+        "url": "",
+        "image": "",
+        "file_name": "",
+        "action": "0",
+        "phong_ban": "",
+        "nhan_vien": "",
+        "next_jump": "0",
+        "children": [
+          {
+            "scenario_id": "1559124351501525",
+            "title": "S8",
+            "content": "S8 Giảm giá 50%",
+            "type": "Text",
+            "url": "",
+            "image": "https://hc.com.vn/media/catalog/product/cache/4/image/340x340/9df78eab33525d08d6e5fb8d27136e95/d/i/dien-thoai-samsung-galaxy-s8-a_1.jpg",
+            "file_name": "",
+            "action": "0",
+            "phong_ban": "28",
+            "nhan_vien": "254",
+            "next_jump": "0"
+          },
+          {
+            "scenario_id": "1560479664609837",
+            "title": "Mua S8",
+            "content": "Tôi muốn mua S8",
+            "type": "Button",
+            "url": "http://topgia.vn/ca-dien-thoai-samsung-9319",
+            "image": "",
+            "file_name": "",
+            "action": "0",
+            "phong_ban": "",
+            "nhan_vien": "",
+            "next_jump": "0"
+          },
+          {
+            "scenario_id": "1559124364551494",
+            "title": "Note 9",
+            "content": "Note 9 giảm giá 60%",
+            "type": "Text",
+            "url": "",
+            "image": "http://i1.topgia.vn/tco/sa2015/7/dien-thoai-samsung-2.jpg",
+            "file_name": "",
+            "action": "0",
+            "phong_ban": "28",
+            "nhan_vien": "254",
+            "next_jump": "0"
+          },
+          {
+            "scenario_id": "1560479676898262",
+            "title": "Mua Note9",
+            "content": "Tôi muốn mua Note 9",
+            "type": "Button",
+            "url": "http://topgia.vn/ca-dien-thoai-samsung-9319",
+            "image": "",
+            "file_name": "",
+            "action": "0",
+            "phong_ban": "",
+            "nhan_vien": "",
+            "next_jump": "0"
+          }
+        ]
+      },
+      {
+        "scenario_id": "1559124272653219",
+        "title": "mua iphone",
+        "content": "Tôi cần mua Iphone",
+        "type": "Button",
+        "url": "",
+        "image": "",
+        "file_name": "",
+        "action": "0",
+        "phong_ban": "",
+        "nhan_vien": "",
+        "next_jump": "0",
+        "children": [
+          {
+            "scenario_id": "1559124397681687",
+            "title": "iphone X",
+            "content": "Tôi cần mua Iphone X",
+            "type": "Button",
+            "url": "",
+            "image": "",
+            "file_name": "",
+            "action": "0",
+            "phong_ban": "",
+            "nhan_vien": "",
+            "next_jump": "0",
+            "children": [
+              {
+                "scenario_id": "1592212290542055",
+                "title": "bản 128GB",
+                "content": "Tôi cần phiên bản 128GB",
+                "type": "Button",
+                "url": "",
+                "image": "",
+                "file_name": "",
+                "action": "jump",
+                "phong_ban": "",
+                "nhan_vien": "",
+                "next_jump": "1559200800391247"
+              },
+              {
+                "scenario_id": "1592212278657306",
+                "title": "bản 64GB",
+                "content": "Tôi cần phiên bản 64GB",
+                "type": "Button",
+                "url": "",
+                "image": "",
+                "file_name": "",
+                "action": "jump",
+                "phong_ban": "",
+                "nhan_vien": "",
+                "next_jump": "1559200800391247"
+              }
+            ]
+          },
+          {
+            "scenario_id": "1559124388561310",
+            "title": "iphone 11",
+            "content": "Tôi cần mua Iphone 11",
+            "type": "Button",
+            "url": "",
+            "image": "",
+            "file_name": "",
+            "action": "jump",
+            "phong_ban": "",
+            "nhan_vien": "",
+            "next_jump": "1559200800391247"
+          }
+        ]
+      },
+      {
+        "scenario_id": "1559200800391247",
+        "title": "Gặp nhân viên",
+        "content": "Gặp nhân viên tư vấn",
+        "type": "Staff",
+        "url": "",
+        "image": "",
+        "file_name": "",
+        "action": "0",
+        "phong_ban": "28",
+        "nhan_vien": "0",
+        "next_jump": "0"
+      }
+    ]
+}

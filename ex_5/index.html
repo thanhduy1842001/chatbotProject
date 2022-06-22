@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Lịch sử chat</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css"/>
+  </head>
+  <body>
+    <div>
+      <div id="search-box">
+          <i class="fa fa-bars icon" id = "task_bar">
+            <div class="dropdown-content">
+              <a class="on-select">
+                <i class="fa fa-comments icon"></i>
+                Lịch sử chat
+              </a>
+              <a href="http://localhost/ex_3/script.html">
+                <i class="fa fa-film"></i>
+                Kịch bản chat
+              </a>
+              <a href="http://localhost/ex_3/suggested_answers.html">
+                <i class="fa fa-lightbulb-o icon"></i>
+                Gợi ý trả lời
+              </a>
+            </div>
+          </i>
+          <i class="fa fa-search icon"></i>
+          <input type="text" id="search" placeholder="Nhập tên khách hàng / nhân viên tư vấn" class="search">
+      </div>
+      <div id = "select">
+        <b>Danh sách cuộc chat: </b>
+      </div>
+    </div>
+    <div id="chatbox"></div>
+    <div id="chat_info">
+      <b>Thông tin cuộc chat: </b>
+      <div id = "staff">
+        <div id = "staff-avatar" class="avatar"></div>
+        <div id = "staff-name"></div>
+        <div class="label">Nhân viên tư vấn</div>
+      </div>
+      <div id = "customer">
+        <div id = "customer-avatar" class="avatar"></div>
+        <div id = "customer-name"></div>
+        <div class="label">Khách hàng</div>
+      </div>
+      <div class="row_customer_info">
+          <i class = "fa fa-envelope"></i>
+          <div class="text-info">
+            <div class="label">Email</div>
+            <div id = "customer-email"></div>
+          </div>
+      </div>
+
+      <div class="row_customer_info">
+        <i class = "fa fa-phone"></i>
+        <div class="text-info">
+          <div class="label">Số điện thoại</div>
+          <div id = "customer-tel"></div>
+        </div>
+      </div>
+
+      <div class="row_customer_info">
+        <i class = "fa fa-map-marker"></i>
+        <div class="text-info">
+          <div class="label">Địa chỉ</div>
+          <div id = "customer-address"></div>
+        </div>
+      </div>
+
+      <div class="row_customer_info">
+        <i class = "fa fa-briefcase"></i>
+        <div class="text-info">
+          <div class="label">Công ty</div>
+          <div id = "customer-company"></div>
+        </div>
+      </div>
+
+      <div class="row_customer_info">
+        <i class="fa fa-sticky-note"></i>
+        <div class="text-info">
+          <div class="label">Ghi chú</div>
+          <div id = "customer-note"></div>
+        </div>
+      </div>
+
+      <button id="update-info">
+        <i class="fa fa-pencil"></i>
+        Cập nhật thông tin khách hàng
+      </button>
+    </div>
+    <div id="edit_customer_info">
+      <label><b>Cập nhật thông tin khách hàng</b></label>
+          <input id = "customer_email" type="text" class="form-control customer_email" name="customer_email" placeholder="Xin vui lòng nhập email">
+          <input id = "customer_tel" type="text" class="form-control customer_tel" name="customer_tel" placeholder="Xin vui lòng nhập số điện thoại">
+          <input id = "customer_address" type="text" class="form-control customer_address" name="customer_address" placeholder="Xin vui lòng nhập địa chỉ">
+          <input id = "customer_company" type="text" class="form-control customer_company" name="customer_company" placeholder="Xin vui lòng nhập công ty">
+          <textarea id = "customer_note" class="form-control customer_note" name="customer_note" placeholder="Xin vui lòng nhập ghi chú"></textarea>
+      <div>
+          <button class="btn btn-primary btn-save">Lưu</button>
+          <button class="btn btn-secondary btn-cancel">Hủy</button>
+      </div>
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+    <script src="./script.js"></script>
+  </body>
+</html>
