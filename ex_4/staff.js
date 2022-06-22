@@ -4,6 +4,7 @@ $(function() {
   var content = $("#chatbox");
   var input = $("#message");
   var to;
+  var typing_time;
   var customer;
   var color;
   // my name sent to the server
@@ -174,10 +175,8 @@ $(function() {
                   break;
               case "typing":
                   if (json.data == to) {
+                      typing_time = 2;
                       $("#typing").show();
-                      setTimeout(function() {
-                          $("#typing").hide();
-                      }, 1000);
                   }
                   break;
               case "end_chat":
@@ -261,7 +260,7 @@ $(function() {
       var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
           (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
 
-          content.append(`<div class="${Class}"><b>${author}</b><div>${message}</div><div class="time">${time}</div></div>`);
+          content.append(`<div class="${Class}"><b>${author}</b><div>${message}</div><div class="time"><i class="fa fa-clock-o icon"></i>${time}</div></div>`);
 
       content.scrollTop(content[0].scrollHeight);
   }
@@ -366,6 +365,11 @@ $(function() {
     input.val(msg);
     input.trigger('focus');
     });
+
+    setInterval(function() {
+        if (typing_time == 0) $("#typing").hide();
+        else typing_time = typing_time - 1;
+    }, 250);
 
     init();
 });

@@ -63,7 +63,7 @@ function addMessage(author, message, dt, i , pos) {
     var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
             (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
             
-    content.append(`<div class="${Class}"><b>${author}</b><div>${message}</div><div class="time">${time}</div></div>`);
+    content.append(`<div class="${Class}"><b>${author}</b><div>${message}</div><div class="time"><i class="fa fa-clock-o icon"></i>${time}</div></div>`);
 
     if(i==pos || pos==-1) content.scrollTop(content[0].scrollHeight);
 }
@@ -202,6 +202,7 @@ $(".btn-save").on("click",function(){
 
     if(customer_email!="") {
         $("#customer-email").text(customer_email);
+        history[id]['customer']['email'] = customer_email;
     }
 
     if(customer_tel!="") {
@@ -230,6 +231,10 @@ $(".btn-save").on("click",function(){
         data: {
             Customer : JSON.stringify(history[id]["customer"]),
             Id : id
+        },
+        success:function(data) {
+            if(data=="success") $.notify("Cập nhật thành công","success");
+            else $.notify("Cập nhật thất bại");
         }
     });
 });

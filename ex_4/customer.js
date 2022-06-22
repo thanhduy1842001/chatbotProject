@@ -6,6 +6,7 @@ $(function() {
     var lang;
     var to = -1;
     var timeout = 300;
+    var typing_time;
     var t = 0;
     var color;
     // my name sent to the server
@@ -136,10 +137,8 @@ $(function() {
                     break;
                 case "typing":
                     if (json.data == to) {
-                        $("#typing").show();
-                        setTimeout(function() {
-                            $("#typing").hide();
-                        }, 1000);
+                        $("#typing").show()
+                        typing_time = 2;
                     }
                     break;
                 case "get_staff":
@@ -231,7 +230,7 @@ $(function() {
         var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
             (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
 
-        content.append(`<div class="${Class}"><b>${author}</b><div>${message}</div><div class="time">${time}</div></div>`);
+        content.append(`<div class="${Class}"><b>${author}</b><div>${message}</div><div class="time"><i class="fa fa-clock-o" style="padding:3px"></i>${time}</div></div>`);
 
         content.scrollTop(content[0].scrollHeight);
     }
@@ -384,6 +383,11 @@ $(function() {
     //         $.notify("Nếu quý khách không còn gì trao đổi thì cuộc chat sẽ kết thúc sau 10s nữa","warn");
     //     }
     // }, 1000);
+
+    setInterval(function() {
+        if (typing_time == 0) $("#typing").hide();
+        else typing_time = typing_time - 1;
+    }, 250);
 
     connect();
 });

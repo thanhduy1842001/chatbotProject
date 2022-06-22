@@ -118,9 +118,7 @@ body{
 }
 
 .row-select:hover:not(.on-select){
-    border-width: 0.5px;
-    border-style: groove;
-    border-color: white;
+    background-color:#6c757d;
 }
 
 .on-select{
@@ -153,7 +151,7 @@ color: white;}
 }
 
 .icon{
-    padding: 5px;
+    padding: 3px;
 }
 
 #staff{

@@ -1,4 +1,5 @@
 <?php
+    Sleep(1);
     function connect2Server(){
         $servername = "localhost";
         $username = 'root';
@@ -7,6 +8,7 @@
             $connect = new PDO("mysql:host=$servername;dbname=chatbot;charset=UTF8", $username, $password);
             $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch(PDOException $e) {
+            echo "fail";
         }
         return $connect;
     }
@@ -21,4 +23,5 @@
 
     $statement = $connect->prepare($query);
     $statement->execute([$_POST['Customer'],$_POST['Id']]);
+    echo "success";
 ?>

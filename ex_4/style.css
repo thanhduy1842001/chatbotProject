@@ -119,13 +119,14 @@
 }
 
 .staff_info{
-    color: rgb(41 210 64);;
-    font-size: 16px;
+    color: rgb(7 177 30);;
+    font-size: 15px;
 }
 
 #staff_info{
-    font-weight: 700;
+    font-weight: 600;
     font-size: 17px;
+    display: inline;
 }
 
 .staff_box{
@@ -254,7 +255,7 @@ max-width: 130px;}
 
 #typing{
     font-size: 13px;
-    color:#a94442;
+    color:#c71f16;
     display:none;
 }
 
