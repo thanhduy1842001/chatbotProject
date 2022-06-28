@@ -4,14 +4,19 @@
     <meta charset="utf-8">
     <title>Chatbot - Staff</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
     <script src="./staff.js"></script>
   </head>
   <body>
+    <div id="icon_chat_container">
+      <i class="fa fa-comments fa-2x icon_chat"></i>
+    </div>
     <div id="body">
       <div id="headerbox">
         <div class="icon_chat_box" id="icon_chat_box" rel="1">
+          <div id="close"></div>
           <img class="image" src="https://livechat.pavietnam.vn/images/user/4.png">
           <span id="hello" class="lang">Xin chào </span>
           <span id="myname"></span>,
@@ -22,15 +27,18 @@
         </div>
         <div class="top" id="top">
           <div id="open_close">
-            <span id="mess" class="lang">Tư vấn địch vụ</span>
-            <img id="up_down" class="icon" src="image/up.jpeg" style="display:none">
+            <span id="mess" class="lang">
+              <img src="https://livechat.pavietnam.vn/data/42/images/config_chat/25x25_6094aaf300dd7.png" class="icon_button">
+              Tư vấn địch vụ
+            </span>
+            <i id="up_down" class="icon fa fa-arrow-up"></i>
           </div>
         </div>
       </div>
       <div id="contentbox">
         <div id="chat" style="display:none">
           <div class=staff_box id="staff">
-            <div id="main-avatar" class="avatar"></div>
+            <div id="customer_avatar"></div>
             <div>
               <div class='staff_info' id='staff_info'></div>
               <span id="typing">
@@ -39,7 +47,7 @@
                 <lord-icon
                     src="https://cdn.lordicon.com/uvextprq.json"
                     trigger="loop"
-                    colors="primary:#c71f16"
+                    colors="primary:#b65f0e"
                     style="width:17px;height:17px">
                 </lord-icon>
               </span>
@@ -63,7 +71,6 @@
           <br>
           <input type="text" name="email" id="email" maxlength="50" pattern=".{3,50}" placeholder="Xin vui lòng nhập mật khẩu" class="input lang" value>
           <div id="button">
-            <img src="https://livechat.pavietnam.vn/data/42/images/config_chat/25x25_6094aaf300dd7.png" class="icon_button">
             <button class="button_chat lang" id="sign_in"> Đăng nhập </button>
           </div>
         </div>
@@ -83,3 +90,4 @@
     </div>
   </body>
 </html>
+

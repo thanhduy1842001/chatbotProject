@@ -8,6 +8,8 @@ var matches;
 var id;
 var acronym;
 var randomColor;
+var staff_avatar;
+var customer_avatar;
 
 $("#chatbox").hide();
 
@@ -55,15 +57,81 @@ function generateAvatar(name,id,color){
     $(id).css('background-color',color);
 }
 
-function addMessage(author, message, dt, i , pos) {
+function addMessageAvatar(author, message, dt, i , pos) {
     var content = $('#chatbox');
-    var Class = "chat-staff-message";
-    if(author == customer) Class = "chat-customer-message";
 
     var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
             (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
-            
-    content.append(`<div class="${Class}"><b>${author}</b><div>${message}</div><div class="time"><i class="fa fa-clock-o icon"></i>${time}</div></div>`);
+    
+    if(author == customer){
+        content.append(`
+        <div class="row_customer">
+            <div class="avatar customer-avatar"></div>
+            <div class="chat-customer-message left"  style="margin-top:20px;">
+                <b> ${author}</b>
+                <div style="white-space: pre-line;">${message}</div>
+                <div class="time">
+                    <i class="fa fa-clock-o" style="padding:3px"></i>
+                    ${time}
+                </div>
+            </div>
+        </div>`
+        );
+    } else {
+        let avatar;
+        if(author == staff) avatar = `<div class="avatar staff-avatar"></div>`;
+        else avatar = `<img src="https://livechat.pavietnam.vn/images/conong.png" class="avatar" id="bot-avatar">`;
+        content.append(`
+        <div class="row-staff">
+            <div class="chat-staff-message right" style="margin-top:20px;">
+                <b> ${author}</b>
+                <div style="white-space: pre-line;">${message}</div>
+                <div class="time">
+                    <i class="fa fa-clock-o" style="padding:3px"></i>
+                    ${time}
+                </div>
+            </div>
+            ${avatar}
+        </div>`
+        );
+    }
+
+    if(i==pos || pos==-1) content.scrollTop(content[0].scrollHeight);
+}
+
+function addMessage(author, message, dt, i , pos) {
+    var content = $('#chatbox');
+
+    var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
+            (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+    
+    if(author == customer){
+        content.append(`
+        <div class="row_customer" style="margin-left:45px">
+            <div class="chat-customer-message">
+                <b> ${author}</b>
+                <div style="white-space: pre-line;">${message}</div>
+                <div class="time">
+                    <i class="fa fa-clock-o" style="padding:3px"></i>
+                    ${time}
+                </div>
+            </div>
+        </div>`
+        );
+    } else {
+        content.append(`
+        <div class="row-staff" style="margin-right:45px">
+            <div class="chat-staff-message">
+                <b> ${author}</b>
+                <div style="white-space: pre-line;">${message}</div>
+                <div class="time">
+                    <i class="fa fa-clock-o" style="padding:3px"></i>
+                    ${time}
+                </div>
+            </div>
+        </div>`
+        );
+    }
 
     if(i==pos || pos==-1) content.scrollTop(content[0].scrollHeight);
 }
@@ -71,9 +139,13 @@ function addMessage(author, message, dt, i , pos) {
 function display(){
     var pos = urlParams.has('pos') ? parseInt(urlParams.get('pos')) : -1;
     customer = history[id]['customer']['name'];
+    staff = history[id]['staff'];
 
     $('#chatbox').empty();
     for(let [i, message] of history[id]['json'].entries()){
+        if(i==0 || message.author!=history[id]['json'][i-1].author)
+        addMessageAvatar(message.author,message.text,new Date(message.time),i,pos);
+        else
         addMessage(message.author,message.text,new Date(message.time),i,pos);
     }
 
@@ -82,16 +154,17 @@ function display(){
     let customer_address = history[id]['customer']['address'];
     let customer_company = history[id]['customer']['company'];
     let customer_note = history[id]['customer']['note'];
-    staff = history[id]['staff'];
 
     if(staff!="") {
-        $("#staff").show();
         $("#staff-name").text(staff);
-        generateAvatar(staff,"#staff-avatar",generateDarkColorHex());
-    }else $("#staff").hide();
+        generateAvatar(staff,".staff-avatar",generateDarkColorHex());
+    }else{
+        $("#staff-name").text("Chatbot");
+        $(".staff-avatar").html(`<img src="https://livechat.pavietnam.vn/images/conong.png" class="avatar" id="bot-avatar">`);
+    }
 
     $("#customer-name").text(customer);
-    generateAvatar(customer,"#customer-avatar", $("#"+id+" .avatar").css('background-color'));
+    generateAvatar(customer,".customer-avatar", $("#"+id+" .avatar").css('background-color'));
 
     if(customer_email!="") $("#customer-email").text(customer_email);
     else $("#customer-email").text("Chưa có dữ liệu");
@@ -112,7 +185,6 @@ function display(){
     if(customer_note!="") $("#customer-note").text(customer_note);
     else $("#customer-note").text("Chưa có dữ liệu");
     $("#customer_note").val(customer_note);
-
 }
 
 $(document).on('ready',function(){

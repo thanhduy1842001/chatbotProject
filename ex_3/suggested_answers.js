@@ -73,11 +73,18 @@ function normalize(str) {
 }
 
 function findSA(msg) {
+    var check= true;
+    $("#tableSA tbody > *").hide();
     msg = normalize(msg);
     console.log(msg);
-    for(let i of SA){
-        if(msg.includes(i['keyword'])) $("#SA ul").append(`<li>${i['answer']}</li>`);
+    for(const [index, value] of SA.entries()){
+        if(msg.includes(value['keyword'])) {
+            $("#SA ul").append(`<li>${value['answer']}</li>`);
+            $('table tbody tr').eq(index).show();
+            check = false;
+        }
     }
+    if(check) $("#SA ul").append(`<li>Không tìm thấy gợi ý trả lời</li>`);
 }
 
 $(document).on("ready",function(){ 
@@ -200,39 +207,19 @@ $(document).on("ready",function(){
 
     $("#search").on('input',function(){
         s = $('#search').val();
-        $("#tableSA tbody").empty();
+        $("table tbody > *").hide();
         for(const [index, value] of SA.entries()){
             s = normalize(s);
             if(value['keyword'].includes(s)) {
-                let table_row = `
-                <tr>
-                    <td>${value['keyword']}</td>
-                    <td>${value['answer']}</td>
-                    <td id="${index}" class="edit">
-                        <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
-                        <lord-icon
-                            src="https://cdn.lordicon.com/puvaffet.json"
-                            trigger="hover"
-                            colors="primary:#ffffff,secondary:#e4e4e4"
-                            style="width:30px;height:30px">
-                        </lord-icon>
-                    </td>
-                    <td id="${index}" class="remove">
-                        <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
-                        <lord-icon
-                            src="https://cdn.lordicon.com/gsqxdxog.json"
-                            trigger="hover"
-                            colors="primary:#ffffff,secondary:#ffffff"
-                            style="width:30px;height:30px">
-                        </lord-icon>
-                    </td>
-                </tr>`;
-                $("#tableSA tbody").append(table_row);
+                $('table tbody tr').eq(index).show();
             }
         }
     });
 
     $("#testSA_button").on("click",function(){
+        if($("#testSA").css("display") != "none") {
+            $("#tableSA tbody > *").show();
+        }
         $("#test").val("");
         $("#testSA").toggle();
         $("#SA ul").empty();

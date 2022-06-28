@@ -5,10 +5,13 @@ $(function() {
     var input = $("#message");
     var lang;
     var to = -1;
-    var timeout = 300;
+    var timeout = 500;
     var typing_time;
     var t = 0;
+    var staff_avatar;
+    var customer_avatar;
     var color;
+    var current_author;
     // my name sent to the server
     var myName = false;
     var connection;
@@ -44,6 +47,12 @@ $(function() {
         return str;
     }
 
+    function generateAvatar(name) {
+        var matches = removeVietnameseTones(name).match(/\b(\w)/g).slice(-2);
+        var acronym = matches.join('').toUpperCase();
+        return `<div class="avatar" style="background-color:${generateDarkColorHex()}">${acronym}</div>`;
+      }
+
     function generateDarkColorHex() {
         let color = "#";
         for (let i = 0; i < 3; i++)
@@ -52,6 +61,15 @@ $(function() {
       }
 
     $.notify.defaults({globalPosition: 'top left'});
+
+    function init(){
+        myName = getCookie("name");
+        if (myName == null) {
+            $("#input_info").show();
+            $("#chat").hide();
+            $("#myname").empty();
+        } else connect();
+    }
     
     $.getJSON("language.json", function(json) {
         dict = json;
@@ -62,43 +80,34 @@ $(function() {
         connection = new WebSocket("ws://172.16.90.133:1337");
         connection.onopen = function() {
             //first we want users to enter their names
-            if (getCookie('lang') != null) {
-                lang = getCookie('lang');
-                $("#change_language").val(lang).on("change",);
-            }
             myName = getCookie("name");
             to = getCookie("to");
-            color = getCookie("color");
-            if (myName != null) {
-                let json = JSON.stringify({
-                    name: myName,
-                    email: $("#email").val(),
-                    tel: "",
-                    address: "",
-                    company: "",
-                    note: ""
-                });
-                console.log($("#email").val());
-                connection.send("cfrom: " + json);
-                connection.send("cto: " + to);
-                $("#input_info").hide();
-                $("#chat").show();
-                $("#myname").text(myName);
-                $("#staff_info").text(to);
-                if($("#contentbox").css('display') == 'none') $('#up_down').trigger('click');
-                var matches = removeVietnameseTones(to).match(/\b(\w)/g).slice(-2);
-                var acronym = matches.join('').toUpperCase();
-                $("#main-avatar").text(acronym);
-                $("#main-avatar").css("background-color",color);
-                if(to=='Chatbot') {
-                    input.hide();
-                    $("#main-avatar").hide();
-                    $("#bot-avatar").show();
-                }
-            } else {
-                $("#input_info").show();
-                $("#chat").hide();
-                $("#myname").empty();
+            color = getCookie("color");          
+            let json = JSON.stringify({
+                name: myName,
+                email: getCookie("email"),
+                tel: "",
+                address: "",
+                company: "",
+                note: ""
+            });
+            connection.send("cfrom: " + json);
+            connection.send("cto: " + to);
+            $("#end_chat").css('display','flex');
+            $("#input_info").hide();
+            $("#chat").show();
+            $("#myname").text(myName);
+            $("#staff_info").text(to);
+            if($("#contentbox").css('display') == 'none') $('#up_down').trigger('click');
+
+            staff_avatar = generateAvatar(to);
+            $("#staff_avatar").html(staff_avatar);
+            customer_avatar = generateAvatar(myName);
+
+            if(to=='Chatbot') {
+                input.hide();
+                $("#staff_avatar").hide();
+                $("#bot-avatar").show();
             }
         };
 
@@ -121,11 +130,23 @@ $(function() {
                 case "history":
                     content.empty();
                     for (var i = 0; i < json.data.length; i++)
-                        addMessage(json.data[i].author, json.data[i].text, new Date(json.data[i].time));
+                        if(i == 0 || current_author!=json.data[i].author) {
+                            addMessageAvatar(json.data[i].author, json.data[i].text, new Date(json.data[i].time));
+                            current_author = json.data[i].author;
+                        }
+                        else
+                            addMessage(json.data[i].author, json.data[i].text, new Date(json.data[i].time));
                     break;
                 case "message":
                     input.removeAttr("disabled").trigger("focus");
-                    if (json.data.author == to) addMessage(json.data.author, json.data.text, new Date(json.data.time));
+                    if (json.data.author == to){
+                        if(current_author!=json.data.author) {
+                            addMessageAvatar(json.data.author, json.data.text, new Date(json.data.time));
+                            current_author = json.data.author;
+                        }
+                        else
+                            addMessage(json.data.author, json.data.text, new Date(json.data.time));
+                    }
                     if ($("#contentbox").css("display")=="none" || json.data.author != to)
                     $.notify("Nhận được tin nhắn mới từ " + json.data.author,"info");
                     break;
@@ -146,13 +167,13 @@ $(function() {
                     setCookie("to", to);
                     connection.send("cto: " + to);
                     $("#staff_info").text(to);
-                    var matches = removeVietnameseTones(to).match(/\b(\w)/g).slice(-2);
-                    var acronym = matches.join('').toUpperCase();
-                    $("#main-avatar").text(acronym);
-                    $("#main-avatar").show();
+                    
+                    staff_avatar = generateAvatar(to);
+                    $("#staff_avatar").html(staff_avatar);
+
+                    $("#staff_avatar").show();
                     $("#bot-avatar").hide();
-                    color = generateDarkColorHex()
-                    $("#main-avatar").css("background-color",color);
+
                     setCookie("color",color);
                     input.show();
                     break;
@@ -188,18 +209,24 @@ $(function() {
     //Send message when user presses Enter key
     input.on("keydown",function(e) {
         if (e.key === "Enter" && !e.shiftKey) {
-            var msg = $(this).val();
-            if (!msg) {
-                return;
+            var msg = input.val();
+            input.val("").on("focus");
+            if (!msg.trim()) {
+                return false;
             }
             var obj = {
                 time: (new Date()).getTime(),
                 text: msg,
                 author: myName,
             };
-            addMessage(obj.author, obj.text, new Date(obj.time));
+            if(current_author!=obj.author) {
+                addMessageAvatar(obj.author, obj.text, new Date(obj.time));
+                current_author = obj.author;
+            }
+            else
+                addMessage(obj.author, obj.text, new Date(obj.time));
             connection.send(msg);
-            $(this).val("");
+            return false;
         }
     });
 
@@ -223,18 +250,83 @@ $(function() {
     });
 
     //Add message to the chat window
-    function addMessage(author, message, dt) {
-        var Class = "chat-customer-message";
-        if (author == myName) Class = "chat-staff-message";
-
+    function addMessageAvatar(author, message, dt) {
+        var avatar;
+        if(author == "Chatbot") avatar = `<img src="https://livechat.pavietnam.vn/images/conong.png" class="avatar">`;
+        else avatar = staff_avatar;
+        var content = $('#chatbox');
+    
         var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
-            (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
-
-        content.append(`<div class="${Class}"><b>${author}</b><div>${message}</div><div class="time"><i class="fa fa-clock-o" style="padding:3px"></i>${time}</div></div>`);
-
+              (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+      
+        if(author != myName){
+          content.append(`
+          <div class="row_customer">
+              ${avatar}
+              <div class="chat-customer-message left" style="margin-top:20px;">
+                  <b> ${author}</b>
+                  <div style="white-space: pre-line;">${message}</div>
+                  <div class="time">
+                      <i class="fa fa-clock-o" style="padding:3px"></i>
+                      ${time}
+                  </div>
+              </div>
+          </div>`
+          );
+        } else {
+          content.append(`
+          <div class="row-staff">
+              <div class="chat-staff-message right" style="margin-top:20px;">
+                  <b> ${author}</b>
+                  <div style="white-space: pre-line;">${message}</div>
+                  <div class="time">
+                      <i class="fa fa-clock-o" style="padding:3px"></i>
+                      ${time}
+                  </div>
+              </div>
+              ${customer_avatar}
+          </div>`
+          );
+        }
         content.scrollTop(content[0].scrollHeight);
     }
-
+    
+    function addMessage(author, message, dt) {
+        var content = $('#chatbox');
+    
+        var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
+              (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+      
+        if(author != myName){
+          content.append(`
+          <div class="row_customer">
+              <div class="chat-customer-message" style="margin-left:55px">
+                  <b> ${author}</b>
+                  <div style="white-space: pre-line;">${message}</div>
+                  <div class="time">
+                      <i class="fa fa-clock-o" style="padding:3px"></i>
+                      ${time}
+                  </div>
+              </div>
+          </div>`
+          );
+        } else {
+          content.append(`
+          <div class="row-staff">
+              <div class="chat-staff-message" style="margin-right:55px">
+                  <b> ${author}</b>
+                  <div style="white-space: pre-line;">${message}</div>
+                  <div class="time">
+                      <i class="fa fa-clock-o" style="padding:3px"></i>
+                      ${time}
+                  </div>
+              </div>
+          </div>`
+          );
+        }
+        content.scrollTop(content[0].scrollHeight);
+    }
+    
     function check_valid() {
         var check = false;
         var name = $("#fullname").val();
@@ -285,13 +377,13 @@ $(function() {
 
     $("#open_chat_box").on("click",function() {
         $("#contentbox").slideToggle("fast");
-        $("#up_down").attr("src", $("#up_down").attr("src") == "image/down.jpeg" ? "image/up.jpeg" : "image/down.jpeg");
+        $("#up_down").toggleClass("fa-arrow-down");
     });
 
     $("#up_down").on("click",function() {
         content.scrollTop(content[0].scrollHeight);
         $("#contentbox").slideToggle("fast");
-        $("#up_down").attr("src", $("#up_down").attr("src") == "image/down.jpeg" ? "image/up.jpeg" : "image/down.jpeg");
+        $("#up_down").toggleClass("fa-arrow-down");
     });
 
     $("#volume").on("click",function() {
@@ -300,9 +392,9 @@ $(function() {
 
     $("#change_language").on("change",function() {
         lang = $("#change_language").val();
-        setCookie('lang', lang);
         $(".lang").each(function() {
             var id = $(this).attr("id");
+            console.log(id);
             var tagname = $(this).prop("tagName").toLowerCase();
             if (tagname != "input") $(this).text(dict[id][lang]);
             else $(this).attr("placeholder", dict[id][lang]);
@@ -314,6 +406,7 @@ $(function() {
         setCookie("name", $("#fullname").val());
         to = "Chatbot";
         setCookie("to", to);
+        setCookie("email", $("#email").val());
         connect();
     });
 
@@ -324,7 +417,8 @@ $(function() {
             text: msg,
             author: myName,
         };
-        addMessage(obj.author, obj.text, new Date(obj.time));
+        addMessageAvatar(obj.author, obj.text, new Date(obj.time));
+        current_author = myName;
         connection.send(msg);
         $('#form').remove();
     });
@@ -336,7 +430,8 @@ $(function() {
             text: msg,
             author: myName,
         };
-        addMessage(obj.author, obj.text, new Date(obj.time));
+        addMessageAvatar(obj.author, obj.text, new Date(obj.time));
+        current_author = myName;
         connection.send(msg);
         $('#form').remove();
     });
@@ -373,21 +468,31 @@ $(function() {
         $(this).addClass('change-input');
     });
 
-    // setInterval(function() {
-    //     if (getCookie("name") != null) t += 1;
+    setInterval(function() { // Chat timeout
+        if (getCookie("name") != null) t += 1;
 
-    //     if (t == timeout) {
-    //         connection.send("end_chat");
-    //         t = 0;
-    //     } else if (t == timeout - 10) {
-    //         $.notify("Nếu quý khách không còn gì trao đổi thì cuộc chat sẽ kết thúc sau 10s nữa","warn");
-    //     }
-    // }, 1000);
+        if (t == timeout) {
+            connection.send("end_chat");
+            t = 0;
+        } else if (t == timeout - 10) {
+            $.notify("Nếu quý khách không còn gì trao đổi thì cuộc chat sẽ kết thúc sau 10s nữa","warn");
+        }
+    }, 1000);
 
-    setInterval(function() {
+    setInterval(function() { // typing timeout
         if (typing_time == 0) $("#typing").hide();
         else typing_time = typing_time - 1;
     }, 250);
 
-    connect();
+    $("#icon_chat_container").on("click",function(){
+        $("#icon_chat_container").hide();
+        $("#body").show();
+    });
+
+    $("#close").on("click",function(){
+        $("#icon_chat_container").show();
+        $("#body").hide();
+    });
+
+    init();
 });

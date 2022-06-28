@@ -14,9 +14,13 @@
       <img id="zoom_image">
       <button id="close_zoom">X</button>
     </div>
+    <div id="icon_chat_container">
+      <i class="fa fa-comments fa-2x icon_chat"></i>
+    </div>
     <div id="body">
       <div id="headerbox">
         <div class="icon_chat_box" id="icon_chat_box" rel="1">
+          <div id="close"></div>
           <img class="image" src="https://livechat.pavietnam.vn/images/user/4.png">
           <span id="hello" class="lang">Xin chào </span>
           <span id="myname"></span>,
@@ -27,16 +31,19 @@
         </div>
         <div class="top" id="top">
           <div id="open_close">
-            <span id='mess' class='lang'>Tư vấn địch vụ</span>
-            <img id="up_down" class="icon" src="image/up.jpeg">
+            <span id='mess' class='lang'>
+              <img src="https://livechat.pavietnam.vn/data/42/images/config_chat/25x25_6094aaf300dd7.png" class="icon_button">
+              Tư vấn địch vụ
+            </span>
+            <i id="up_down" class="icon fa fa-arrow-up"></i>
           </div>
         </div>
       </div>
       <div id="contentbox">
         <div id='chat' style='display:none'>
           <div class=staff_box id='staff'>
-            <img src="https://cdn6.f-cdn.com/contestentries/1476201/32214673/5c7f869653351_thumb900.jpg" class="avatar" id="bot-avatar">
-            <div id="main-avatar" class="avatar"></div>
+            <img src="https://livechat.pavietnam.vn/images/conong.png" class="avatar" id="bot-avatar">
+            <div id="staff_avatar"></div>
             <div>
               <div class='staff_info' id='staff_info'></div>
               <span id="typing">
@@ -45,11 +52,11 @@
                 <lord-icon
                     src="https://cdn.lordicon.com/uvextprq.json"
                     trigger="loop"
-                    colors="primary:#c71f16"
+                    colors="primary:#b65f0e"
                     style="width:17px;height:17px">
                 </lord-icon>
               </span>
-              <div class='staff_info lang'>Nhân viên tư vấn</div>
+              <div class='staff_info lang' id="pos">Nhân viên tư vấn</div>
             </div>
           </div>
           <div id="chatbox"></div>
@@ -69,7 +76,6 @@
           <br>
           <input type="text" name="email" id="email" maxlength="50" pattern=".{3,32}" placeholder="Xin vui lòng nhập địa chỉ email" class="input lang" value>
           <div id="button">
-          <img src="https://livechat.pavietnam.vn/data/42/images/config_chat/25x25_6094aaf300dd7.png" class="icon_button">
             <button class="button_chat lang" id='start_chat'>Bắt đầu trao đổi</button>
           </div>
         </div>

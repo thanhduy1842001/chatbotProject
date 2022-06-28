@@ -65,14 +65,14 @@ $(document).on("ready",function(){
             processData:false,
             beforeSend:function(){
                 $('#submit2').attr('disabled',true),
-                $('#submit2').val('Inserting...');
+                $('#submit2').text('Đang xử lí ...');
             },
             success:function(data){
                 if(data=="success") $.notify("Thêm kịch bản thành công","success");
                 else $.notify("Thêm kịch bản thất bại");
                 $('#insert_form')[0].reset();
                 $('#submit2').removeAttr("disabled");
-                $('#submit2').val('Insert');
+                $('#submit2').html('<i class="fa fa-save"></i> Lưu');
                 getdata();
             }
         });
@@ -89,7 +89,7 @@ $(document).on("ready",function(){
             processData:false,
             beforeSend:function(){
                 $('#submit3').attr('disabled',true),
-                $('#submit3').val('Updating...');
+                $('#submit3').text('Đang xử lí ...');
             },
             success:function(data){
                 console.log(data);
@@ -98,7 +98,7 @@ $(document).on("ready",function(){
                 $("#message").html(data);
                 $('#update_form')[0].reset();
                 $('#submit3').removeAttr("disabled");
-                $('#submit3').val('Update');
+                $('#submit3').html('<i class="fa fa-save"></i> Lưu');
                 getdata();
             }
         });
@@ -115,14 +115,14 @@ $(document).on("ready",function(){
             processData:false,
             beforeSend:function(){
                 $('#submit4').attr('disabled',true),
-                $('#submit4').val('Deleting...');
+                $('#submit4').text('Đang xử lí ...');
             },
             success:function(data){
                 if(data=="success") $.notify("Xóa kịch bản thành công","success");
                 else $.notify("Xóa kịch bản thất bại");
                 $('#update_form')[0].reset();
                 $('#submit4').removeAttr("disabled");
-                $('#submit4').val('Delete');
+                $('#submit4').html('<i class="fa fa-save"></i> Lưu');
                 getdata();
             }
         });
