@@ -438,22 +438,9 @@ $(function() {
 
     $('#chatbox').on('click', 'img', function() {
         var src = $(this).attr('src');
-        $("#zoom_image").attr('src',src);
-        $("#zoom").show();
-        $("#body").hide();
-    });
-
-    $("#close_zoom").on('click', function() {
-        $("#zoom").hide();
-        $("#body").show();
-    });
-
-    $("#zoom").on("mouseenter", function() {
-        $("#close_zoom").show();
-    });
-
-    $("#zoom").on("mouseleave", function() {
-        $("#close_zoom").hide();
+        $.fancybox.open({
+            src  : src
+        });
     });
 
     $(document).on("mousemove",function(event) {

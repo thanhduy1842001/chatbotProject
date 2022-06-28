@@ -1,8 +1,8 @@
-body{
+/* body{
     background-image: url('https://www.bitcatcha.vn/wp-content/uploads/2020/07/pavietnam-homepage.png');
     background-repeat: no-repeat;
     background-size: cover;
-}
+} */
 
 .icon_chat_box {
     background-color: #dd1a5b7d;
@@ -234,13 +234,17 @@ text-decoration: none;
 }
 
 #end_chat {
-background-color: #fedede;
-margin-left: auto;
-margin-right: 5px;
-cursor: pointer;
-display: none;
-align-items: center;
-justify-content: center;
+    font-weight: bold;
+    color: white;
+    background-color: #dd1a5b;
+    margin-left: auto;
+    margin-right: 5px;
+    padding: 3px;
+    border-radius: 5%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
 }
 
 #to {
@@ -375,35 +379,6 @@ cursor: pointer;
 margin-top: 5px;
 }
 
-#zoom {
-position: fixed;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-display: none;
-}
-
-#close_zoom {
-display: none;
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
--ms-transform: translate(-50%, -50%);
-background-color: #555;
-color: white;
-font-size: 15px;
-padding: 10px;
-border: none;
-cursor: pointer;
-border-radius: 50%;
-text-align: center;
-}
-
-#close_zoom:hover {
-background-color: red;
-}
-
 li {
 list-style: number;
 margin-top: 5px;
@@ -496,4 +471,20 @@ background-color: rgb(8, 8, 8);
 
 button:hover {
     opacity: 0.8;
+}
+
+#new_message{
+    position: absolute;
+    cursor: pointer;
+    background-color: #78e638;
+    width: fit-content;
+    padding: 5px;
+    border-radius: 50%;
+    right: -5px;
+    bottom: 30px;
+    z-index: 1;
+}
+
+#chatbox img:hover{
+    cursor: zoom-in;
 }
