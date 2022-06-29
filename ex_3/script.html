@@ -1,6 +1,6 @@
 <html lang="en">
     <head>
-        <title>Kịch bản chat</title>
+        <title>Chatbot - Admin</title>
         <meta charset="UTF-8">
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
         <link rel="stylesheet" href="jquery.orgchart.css">
@@ -59,11 +59,11 @@
                     <input type="text" id='url' name="url" placeholder="Nhập URL"><br>
                     <input type="text" id='image' name="image" placeholder="Nhập link hình ảnh"><br>
                     <input type="text" id='file_name' name="file_name" placeholder="Nhập tên file"><br>
-                    <input type="text" id='action' name="action" placeholder="Nhập hành động"><br>
-                    <input type="number" id='phong_ban' name="phong_ban" placeholder="Nhập ID phòng ban"><br>
-                    <input type="number" id='nhan_vien' name="nhan_vien" placeholder="Nhập ID nhân viên"><br>
+                    <input type="text" id='action' name="action" placeholder="Nhập hành động" value="0"><br>
+                    <input type="number" id='phong_ban' name="phong_ban" placeholder="Nhập ID phòng ban" value=0><br>
+                    <input type="number" id='nhan_vien' name="nhan_vien" placeholder="Nhập ID nhân viên" value=0><br>
                     <select name="next_jump" id="next_jump" class="id">
-                        <option selected value>Chọn sự kiện kế tiếp</option>
+                        <option selected value=0>Chọn sự kiện kế tiếp</option>
                     </select><br>
                     <select name="parent_id" id="parent_id" class="id" required>
                         <option selected value="">Chọn nhánh cha</option>

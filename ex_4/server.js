@@ -22,17 +22,7 @@ function updateScript() {
     console.log((new Date()) + " Script was updated");
 }
 
-function insertScript(newContent, newParentId) {
-    var sql = `INSERT INTO scenario (content, title, parent_id) VALUES ( '${newContent}', '${newContent}', ${newParentId})`;
-    con.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log((new Date()) + " Script was inserted");
-        updateScript();
-    });
-}
-
 updateScript();
-//setInterval(updateScript, 10000);
 
 function removeVietnameseTones(str) {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
@@ -79,6 +69,7 @@ var mailOptions = {
 
 
 // Global variable
+var admin = null;
 var history = {};
 var clients = {};
 var staff = new Set();
@@ -206,128 +197,151 @@ wsServer.on("request", function(request) {
 
     connection.on("message", function(message) {
         if (message.type === "utf8") {
-            if (message.utf8Data == "end_chat") {
-                var json = JSON.stringify(history[historyName]);
-                var s = (to != "Chatbot")?to:"";
-                var sql = "INSERT INTO history (staff,customer,json) VALUES ?";
-                var values = [
-                    [s,JSON.stringify(customer),json]
-                ];
-                con.query(sql, [values], function(err, result) {
-                    if (err) throw err;
-                    console.log((new Date()) + " Insert successfully");
-                    sendEmail(result.insertId);
-                });
-                clients[from].sendUTF(JSON.stringify({
-                    type: "end_chat"
-                }));
-                if (to != "Chatbot")
-                    clients[to].sendUTF(JSON.stringify({
-                        type: "end_chat",
-                        data: from
-                    }));
-                return;
-            } else if (message.utf8Data == "typing" && from !== false && to != -1 && to != "Chatbot") {
-                clients[to].sendUTF(JSON.stringify({
-                    type: "typing",
-                    data: from
-                }));
-            } else if (message.utf8Data.includes("from: ")) {
-                from = message.utf8Data.substring(7);
-                if (message.utf8Data[0] == "s") staff.add(from);
-                else {
-                    customer = JSON.parse(from);
-                    from = customer.name;
-                }
-                console.log((new Date()) + " User is known as: " + from);
-                clients[from] = connection;
-            } else if (message.utf8Data.includes("to: ")) {
-                to = message.utf8Data.substring(5);
-                if (message.utf8Data[0] == "c" && to != "Chatbot") {
-                    clients[to].sendUTF(JSON.stringify({
-                        type: "req",
-                        data: from
-                    }));
-                    historyName = from + " - " + to;
-                } else historyName = to + " - " + from;
-                
-                console.log((new Date()) + " " + from + " want to chat with " + to);
-
-                if(!history.hasOwnProperty(historyName)) {
-                        if(to == "Chatbot") history[historyName] = [];
-                        else {
-                            history[historyName] = history["Chatbot - " + from];
-                        }
-                }
-                
-                if (history[historyName].length!=0) {
-                    if (to == "Chatbot") {
-                        var json = JSON.stringify({
-                            type: "history",
-                            data: history[historyName]
-                        });
-                        connection.sendUTF(json);
-                        let html = reply(history[historyName].slice(-1)[0]['text']);
-                        botMessage(html);
-                        }
-                    else {
-                        var json = JSON.stringify({
-                            type: "history",
-                            data: history[historyName]
-                        });
-                        connection.sendUTF(json);
-                    }
-                }
-                else if (to == "Chatbot") {
-                    addHistory(script[0]['content'],to);
-
-                    let html = reply(script[0]['content']);
-                    var obj = {
-                        time: (new Date()).getTime(),
-                        text: html,
-                        author: to,
-                    };
-                    json = JSON.stringify({
-                        type: "message",
-                        data: obj
+            switch (message.utf8Data) {
+                case "admin":
+                    admin = connection;
+                    console.log((new Date()) + " " + "Admin connected");
+                    break;
+                case "end_chat":
+                    var json = JSON.stringify(history[historyName]);
+                    var s = (to != "Chatbot")?to:"";
+                    var sql = "INSERT INTO history (staff,customer,json) VALUES ?";
+                    var values = [
+                        [s,JSON.stringify(customer),json]
+                    ];
+                    con.query(sql, [values], function(err, result) {
+                        if (err) throw err;
+                        console.log((new Date()) + " Insert successfully");
+                        sendEmail(result.insertId);
                     });
-                    clients[from].sendUTF(json);
-                }
-
-            } else {
-                console.log((new Date()) + " Received Message from " + from + ": " + message.utf8Data);
-                var obj = addHistory(message.utf8Data, from);
-
-                var json = JSON.stringify({
-                    type: "message",
-                    data: obj
-                });
-
-                if (to != "Chatbot") clients[to].sendUTF(json);
-                else {
-                    if (message.utf8Data == "Gặp nhân viên tư vấn") {
-                        if (staff.size == 0) {
-                            botMessage("Xin lỗi hiện tại không có nhân viên nào online!");
+                    clients[from].sendUTF(JSON.stringify({
+                        type: "end_chat"
+                    }));
+                    if (to != "Chatbot")
+                        clients[to].sendUTF(JSON.stringify({
+                            type: "end_chat",
+                            data: from
+                    }));
+                    if(admin) admin.send("new_chat");
+                    break;
+                case "update_script":
+                    updateScript();
+                    break;
+                case "update_SA":
+                    console.log((new Date()) + " SA was updated");
+                    for (let s of staff){
+                        clients[s].send(JSON.stringify({
+                            type: "update_SA",
+                        }));
+                    }
+                    break;
+                case "typing":
+                    if (from !== false && to != -1 && to != "Chatbot") {
+                        clients[to].sendUTF(JSON.stringify({
+                            type: "typing",
+                            data: from
+                        }));
+                    }
+                    break;
+                default:
+                    if (message.utf8Data.includes("from: ")) {
+                        from = message.utf8Data.substring(7);
+                        if (message.utf8Data[0] == "s") staff.add(from);
+                        else {
+                            customer = JSON.parse(from);
+                            from = customer.name;
+                        }
+                        console.log((new Date()) + " User is known as: " + from);
+                        clients[from] = connection;
+                    } else if (message.utf8Data.includes("to: ")) {
+                        to = message.utf8Data.substring(5);
+                        if (message.utf8Data[0] == "c" && to != "Chatbot") {
+                            clients[to].sendUTF(JSON.stringify({
+                                type: "req",
+                                data: from
+                            }));
+                            historyName = from + " - " + to;
+                        } else historyName = to + " - " + from;
+                        
+                        console.log((new Date()) + " " + from + " want to chat with " + to);
+        
+                        if(!history.hasOwnProperty(historyName)) {
+                                if(to == "Chatbot") history[historyName] = [];
+                                else {
+                                    history[historyName] = history["Chatbot - " + from];
+                                }
+                        }
+                        
+                        if (history[historyName].length!=0) {
+                            if (to == "Chatbot") {
+                                var json = JSON.stringify({
+                                    type: "history",
+                                    data: history[historyName]
+                                });
+                                connection.sendUTF(json);
+                                let html = reply(history[historyName].slice(-1)[0]['text']);
+                                botMessage(html);
+                                }
+                            else {
+                                var json = JSON.stringify({
+                                    type: "history",
+                                    data: history[historyName]
+                                });
+                                connection.sendUTF(json);
+                            }
+                        }
+                        else if (to == "Chatbot") {
+                            addHistory(script[0]['content'],to);
+        
                             let html = reply(script[0]['content']);
-                            botMessage(html);
-                            addHistory("Xin lỗi hiện tại không có nhân viên nào online!","Chatbot");
-                            addHistory(script[0]['content'],"Chatbot");
-                        } else {
-                            tmp = Array.from(staff);
-                            var s = tmp[Math.floor(Math.random() * tmp.length)];
-                            botMessage("Quý khách đã được kết nối tới nhân viên tư vấn: " + s);
-                            addHistory("Quý khách đã được kết nối tới nhân viên tư vấn: " + s, "Chatbot");
-                            var json = JSON.stringify({
-                                type: "get_staff",
-                                data: s
+                            var obj = {
+                                time: (new Date()).getTime(),
+                                text: html,
+                                author: to,
+                            };
+                            json = JSON.stringify({
+                                type: "message",
+                                data: obj
                             });
                             clients[from].sendUTF(json);
                         }
+        
                     } else {
-                        let html = reply(message.utf8Data);
-                        botMessage(html);
+                        console.log((new Date()) + " Received Message from " + from + ": " + message.utf8Data);
+                        var obj = addHistory(message.utf8Data, from);
+        
+                        var json = JSON.stringify({
+                            type: "message",
+                            data: obj
+                        });
+        
+                        if (to != "Chatbot") clients[to].sendUTF(json);
+                        else {
+                            if (message.utf8Data == "Gặp nhân viên tư vấn") {
+                                if (staff.size == 0) {
+                                    botMessage("Xin lỗi hiện tại không có nhân viên nào online!");
+                                    let html = reply(script[0]['content']);
+                                    botMessage(html);
+                                    addHistory("Xin lỗi hiện tại không có nhân viên nào online!","Chatbot");
+                                    addHistory(script[0]['content'],"Chatbot");
+                                } else {
+                                    tmp = Array.from(staff);
+                                    var s = tmp[Math.floor(Math.random() * tmp.length)];
+                                    botMessage("Quý khách đã được kết nối tới nhân viên tư vấn: " + s);
+                                    addHistory("Quý khách đã được kết nối tới nhân viên tư vấn: " + s, "Chatbot");
+                                    var json = JSON.stringify({
+                                        type: "get_staff",
+                                        data: s
+                                    });
+                                    clients[from].sendUTF(json);
+                                }
+                            } else {
+                                let html = reply(message.utf8Data);
+                                botMessage(html);
+                            }
+                        }
                     }
-                }
+                    break;
             }
         }
     });

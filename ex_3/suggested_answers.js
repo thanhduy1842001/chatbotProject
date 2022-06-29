@@ -1,5 +1,6 @@
 var index;
 var SA;
+var connection;
 
 function drawTable(){
     $("#tableSA tbody").empty();
@@ -13,8 +14,8 @@ function drawTable(){
                 <lord-icon
                     src="https://cdn.lordicon.com/puvaffet.json"
                     trigger="hover"
-                    colors="primary:white,secondary:white"
-                    style="width:30px;height:30px">
+                    colors="primary:#fff,secondary:#fff"
+                    style="width:35px;height:35px">
                 </lord-icon>
             </td>
             <td id="${index}" class="remove">
@@ -22,8 +23,8 @@ function drawTable(){
                 <lord-icon
                     src="https://cdn.lordicon.com/gsqxdxog.json"
                     trigger="hover"
-                    colors="primary:white,secondary:white"
-                    style="width:30px;height:30px">
+                    colors="primary:#fff,secondary:#fff"
+                    style="width:35px;height:35px">
                 </lord-icon>
             </td>
         </tr>`;
@@ -88,6 +89,16 @@ function findSA(msg) {
 }
 
 $(document).on("ready",function(){ 
+    function connect() {
+        connection = new WebSocket("ws://172.16.90.133:1337");
+
+        connection.onclose = function() {
+            setTimeout(function() {
+                connect();
+            }, 2500);
+        };
+    }
+
     $(document).on('click', '.remove', function () {
         let index = parseInt($(this).attr("id"));
         if (confirm(`Bạn có chắc chắn muốn xóa gợi ý trả lời này`) == true) {
@@ -102,6 +113,7 @@ $(document).on("ready",function(){
                     if(data=="success") $.notify("Xóa thành công","success");
                     else $.notify("Xóa thất bại");
                     getSA();
+                    connection.send("update_SA");
                 }
             });
         } 
@@ -153,6 +165,7 @@ $(document).on("ready",function(){
                 if(data=="success") $.notify("Thêm thành công","success");
                 else $.notify("Thêm thất bại");
                 getSA();
+                connection.send("update_SA");
             }
         });
 
@@ -188,6 +201,7 @@ $(document).on("ready",function(){
                 if(data=="success") $.notify("Chỉnh sửa thành công","success");
                 else $.notify("Chỉnh sửa thất bại");
                 getSA();
+                connection.send("update_SA");
             }
         });
     });
@@ -234,4 +248,5 @@ $(document).on("ready",function(){
     });
     
     getSA();
+    connect();
 });

@@ -10,6 +10,7 @@ $(function() {
     var t = 0;
     var staff_avatar;
     var customer_avatar;
+    var new_message = 0;
     var color;
     var current_author;
     // my name sent to the server
@@ -51,14 +52,14 @@ $(function() {
         var matches = removeVietnameseTones(name).match(/\b(\w)/g).slice(-2);
         var acronym = matches.join('').toUpperCase();
         return `<div class="avatar" style="background-color:${generateDarkColorHex()}">${acronym}</div>`;
-      }
+    }
 
     function generateDarkColorHex() {
         let color = "#";
         for (let i = 0; i < 3; i++)
           color += ("0" + Math.floor(Math.random() * Math.pow(16, 2) / 2).toString(16)).slice(-2);
         return color;
-      }
+    }
 
     $.notify.defaults({globalPosition: 'top left'});
 
@@ -139,16 +140,26 @@ $(function() {
                     break;
                 case "message":
                     input.removeAttr("disabled").trigger("focus");
+                    
                     if (json.data.author == to){
                         if(current_author!=json.data.author) {
                             addMessageAvatar(json.data.author, json.data.text, new Date(json.data.time));
                             current_author = json.data.author;
                         }
-                        else
-                            addMessage(json.data.author, json.data.text, new Date(json.data.time));
+                        else addMessage(json.data.author, json.data.text, new Date(json.data.time));
                     }
-                    if ($("#contentbox").css("display")=="none" || json.data.author != to)
-                    $.notify("Nhận được tin nhắn mới từ " + json.data.author,"info");
+
+                    if ($("#contentbox").css("display")=="none" || json.data.author != to){
+                        $.notify("Nhận được tin nhắn mới từ " + json.data.author,"info");
+                    }
+
+                    if($("#body").css("display")=="none"){
+                        new_message += 1;
+                        $.notify("Nhận được tin nhắn mới từ " + json.data.author,"info");
+                        $("#new_message").text(new_message);
+                        $("#new_message").show();
+                    }
+
                     break;
                 case "end_chat":
                     alert("Xin chào tạm biệt quý khách!");
@@ -183,11 +194,10 @@ $(function() {
             }
         };
 
-        connection.onerror = function() {
-            setCookie("name", "");
-            setCookie("to", "");
-            setCookie("color", "");
-            location.reload();
+        connection.onclose = function() {
+            setTimeout(function() {
+                connect();
+            }, 2500);
         };
     }
 
@@ -472,7 +482,9 @@ $(function() {
     }, 250);
 
     $("#icon_chat_container").on("click",function(){
+        new_message = 0;
         $("#icon_chat_container").hide();
+        $("#new_message").hide();
         $("#body").show();
     });
 

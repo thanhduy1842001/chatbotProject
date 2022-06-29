@@ -1,3 +1,5 @@
+var connection;
+
 function get_options(data)
 {
     options = "<option value=" + data['scenario_id'] + ">" + data['title'] + "</option>";
@@ -33,26 +35,15 @@ function getdata(){
 }
 
 $(document).on("ready",function(){
-    $('#import_form').on('submit', function(event){
-        event.preventDefault();
-        $.ajax({
-            url: "import.php",
-            type: "post",
-            data: new FormData(this),
-            contentType:false,
-            cache:false,
-            processData:false,
-            beforeSend:function(){
-                $('#submit1').attr('disabled',true),
-                $('#submit1').val('Importing...');
-            },
-            success:function(data){
-                $('#import_form')[0].reset();
-                $('#submit1').removeAttr("disabled");
-                $('#submit1').val('Import');
-            }
-        });
-    });
+    function connect() {
+        connection = new WebSocket("ws://172.16.90.133:1337");
+
+        connection.onclose = function() {
+            setTimeout(function() {
+                connect();
+            }, 2500);
+        };
+    }
 
     $('#insert_form').on('submit', function(event){
         event.preventDefault();
@@ -74,6 +65,7 @@ $(document).on("ready",function(){
                 $('#submit2').removeAttr("disabled");
                 $('#submit2').html('<i class="fa fa-save"></i> Lưu');
                 getdata();
+                connection.send('update_script');
             }
         });
     });
@@ -100,6 +92,7 @@ $(document).on("ready",function(){
                 $('#submit3').removeAttr("disabled");
                 $('#submit3').html('<i class="fa fa-save"></i> Lưu');
                 getdata();
+                connection.send('update_script');
             }
         });
     });
@@ -124,6 +117,7 @@ $(document).on("ready",function(){
                 $('#submit4').removeAttr("disabled");
                 $('#submit4').html('<i class="fa fa-save"></i> Lưu');
                 getdata();
+                connection.send('update_script');
             }
         });
     });
@@ -147,4 +141,5 @@ $(document).on("ready",function(){
     });
 
     getdata();
+    connect();
 });

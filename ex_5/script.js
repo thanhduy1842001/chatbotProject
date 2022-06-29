@@ -1,3 +1,23 @@
+var connection;
+
+function connect(){
+    connection = new WebSocket("ws://172.16.90.133:1337");
+
+    connection.onopen = function() {
+        connection.send("admin");
+    };
+
+    connection.onmessage = function(message) {
+        getHistory();
+    };
+
+    connection.onclose = function() {
+        setTimeout(function() {
+            connect();
+        }, 2500);
+    };
+}
+
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 var customer;
@@ -12,6 +32,7 @@ var staff_avatar;
 var customer_avatar;
 
 $("#chatbox").hide();
+connect();
 
 function normalize(str) {
     return removeVietnameseTones(str).toLowerCase();
@@ -187,11 +208,12 @@ function display(){
     $("#customer_note").val(customer_note);
 }
 
-$(document).on('ready',function(){
+function getHistory() {
     $.ajax({
         url: "getChat.php",
         type: "get",
         success:function(data){
+            $('#select').empty();
             var obj = JSON.parse(data);
             for(let i of obj){
                 randomColor = generateDarkColorHex();
@@ -222,7 +244,7 @@ $(document).on('ready',function(){
             }
         }
     });
-});
+}
 
 $("#select").on('click','.row-select',function(){
 
@@ -315,4 +337,6 @@ $("a").each(function() {
    if( $(this).attr('href') == window.location.href) 
    $(this).addClass('on-select');
 });
+
+getHistory();
 

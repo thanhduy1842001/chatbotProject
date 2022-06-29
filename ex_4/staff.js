@@ -7,6 +7,7 @@ $(function() {
     var typing_time;
     var customer;
     var color;
+    var new_message = 0;
     var current_author;
     // my name sent to the server
     var myName = false;
@@ -30,13 +31,15 @@ $(function() {
     return color;
     }
 
-    $.ajax({ // get answers
-    url: "getAnswers.php",
-    type: "get",
-    success:function(data){
-        answers = JSON.parse(data);
+    function getSA() {
+        $.ajax({ // get answers
+            url: "getAnswers.php",
+            type: "get",
+            success:function(data){
+                answers = JSON.parse(data);
+            }
+        });
     }
-    });
 
     function init() {
         $.get('language.json', function(data) {
@@ -167,16 +170,19 @@ $(function() {
                 case "message":
                     input.removeAttr("disabled").trigger("focus");
                     if (json.data.author == to) {
-                    if(current_author != json.data.author) {
-                        addMessageAvatar(json.data.author, json.data.text, new Date(json.data.time));
-                        current_author = json.data.author;
+                        if(current_author != json.data.author) {
+                            addMessageAvatar(json.data.author, json.data.text, new Date(json.data.time));
+                            current_author = json.data.author;
+                        } else addMessage(json.data.author, json.data.text, new Date(json.data.time));
+                        checkKeyword(json.data.text);
                     }
-                    else
-                        addMessage(json.data.author, json.data.text, new Date(json.data.time));
-                    checkKeyword(json.data.text);
-                    }
-                    if ($("#contentbox").css("display")=="none" || json.data.author != to)
+                    if ($("#contentbox").css("display")=="none" || json.data.author != to || $("#body").css("display")=="none")
                     $.notify("Nhận được tin nhắn mới từ " + json.data.author,"info");
+                    if ($("#body").css("display")=="none") {
+                        new_message += 1;
+                        $("#new_message").text(new_message);
+                        $("#new_message").show();
+                    }
                     break;
                 case "req":
                     $.notify("Có yêu cầu hỗ trợ mới từ " + json.data,"info");
@@ -206,6 +212,8 @@ $(function() {
                     $("#to").append("<option class='lang' id ='customer'>" + dict["customer"][lang] + "</option>");
                     for (let i of customer) $("#to").append("<option>" + i + "</option>");
                     break;
+                case "update_SA":
+                    getSA()
                 default:
                     console.log("Hmm..., I\"ve never seen JSON like this:", json);
                     break;
@@ -215,14 +223,7 @@ $(function() {
         connection.onclose = function() {
             setTimeout(function() {
                 connect();
-            }, 1000);
-        };
-
-        connection.onerror = function() {
-        // setCookie("name", "");
-        // setCookie("to", "");
-        // setCookie("color", "");
-        // location.reload();
+            }, 2500);
         };
     }
 
@@ -444,8 +445,9 @@ $(function() {
     $(this).trigger('notify-hide');
     });
 
-
     $("#icon_chat_container").on("click",function(){
+        new_message = 0;
+        $("#new_message").hide();
         $("#icon_chat_container").hide();
         $("#body").show();
     });
@@ -461,4 +463,5 @@ $(function() {
     }, 250);
 
     init();
+    getSA();
 });
