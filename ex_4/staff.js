@@ -214,6 +214,7 @@ $(function() {
                     break;
                 case "update_SA":
                     getSA()
+                    break;
                 default:
                     console.log("Hmm..., I\"ve never seen JSON like this:", json);
                     break;

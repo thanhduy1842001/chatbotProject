@@ -349,9 +349,7 @@ wsServer.on("request", function(request) {
     connection.on("close", function(connection) {
         if (from !== false && to != -1) {
             console.log((new Date()) + " Peer " + from + " disconnected.");
-            if (staff.has(from)) {
-                staff.delete(from);
-            }
+            staff.delete(from);
         }
     });
 });

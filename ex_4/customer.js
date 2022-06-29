@@ -149,13 +149,12 @@ $(function() {
                         else addMessage(json.data.author, json.data.text, new Date(json.data.time));
                     }
 
-                    if ($("#contentbox").css("display")=="none" || json.data.author != to){
+                    if ($("#contentbox").css("display")=="none" || json.data.author != to || $("#body").css("display")=="none"){
                         $.notify("Nhận được tin nhắn mới từ " + json.data.author,"info");
                     }
 
                     if($("#body").css("display")=="none"){
                         new_message += 1;
-                        $.notify("Nhận được tin nhắn mới từ " + json.data.author,"info");
                         $("#new_message").text(new_message);
                         $("#new_message").show();
                     }
@@ -465,16 +464,16 @@ $(function() {
         $(this).addClass('change-input');
     });
 
-    setInterval(function() { // Chat timeout
-        if (getCookie("name") != null) t += 1;
+    // setInterval(function() { // Chat timeout
+    //     if (getCookie("name") != null) t += 1;
 
-        if (t == timeout) {
-            connection.send("end_chat");
-            t = 0;
-        } else if (t == timeout - 10) {
-            $.notify("Nếu quý khách không còn gì trao đổi thì cuộc chat sẽ kết thúc sau 10s nữa","warn");
-        }
-    }, 1000);
+    //     if (t == timeout) {
+    //         connection.send("end_chat");
+    //         t = 0;
+    //     } else if (t == timeout - 10) {
+    //         $.notify("Nếu quý khách không còn gì trao đổi thì cuộc chat sẽ kết thúc sau 10s nữa","warn");
+    //     }
+    // }, 1000);
 
     setInterval(function() { // typing timeout
         if (typing_time == 0) $("#typing").hide();
