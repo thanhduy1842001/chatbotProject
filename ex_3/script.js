@@ -28,6 +28,7 @@ function getdata(){
             options = get_options(jsonObj);
             $('.id').each(function(){
                 $(this).find('option').not(':first').remove();
+                $(this).append(`<option value="${0}">Root</option>`);
                 $(this).append(options);
             });
         }
@@ -99,27 +100,29 @@ $(document).on("ready",function(){
 
     $('#delete_form').on('submit', function(event){
         event.preventDefault();
-        $.ajax({
-            url: "delete.php",
-            type: "post",
-            data: new FormData(this),
-            contentType:false,
-            cache:false,
-            processData:false,
-            beforeSend:function(){
-                $('#submit4').attr('disabled',true),
-                $('#submit4').text('Đang xử lí ...');
-            },
-            success:function(data){
-                if(data=="success") $.notify("Xóa kịch bản thành công","success");
-                else $.notify("Xóa kịch bản thất bại");
-                $('#update_form')[0].reset();
-                $('#submit4').removeAttr("disabled");
-                $('#submit4').html('<i class="fa fa-save"></i> Lưu');
-                getdata();
-                connection.send('update_script');
-            }
-        });
+        if (confirm(`Bạn có chắc chắn muốn xóa nhánh kịch bản này`) == true){
+            $.ajax({
+                url: "delete.php",
+                type: "post",
+                data: new FormData(this),
+                contentType:false,
+                cache:false,
+                processData:false,
+                beforeSend:function(){
+                    $('#submit4').attr('disabled',true),
+                    $('#submit4').text('Đang xử lí ...');
+                },
+                success:function(data){
+                    if(data=="success") $.notify("Xóa kịch bản thành công","success");
+                    else $.notify("Xóa kịch bản thất bại");
+                    $('#update_form')[0].reset();
+                    $('#submit4').removeAttr("disabled");
+                    $('#submit4').html('<i class="fa fa-save"></i> Lưu');
+                    getdata();
+                    connection.send('update_script');
+                }
+            });
+        }
     });
 
     $("#add").on("click",function(){

@@ -11,34 +11,6 @@
         return $connect;
     }
 
-    function display_data($data) {
-        $output = '<table>';
-        foreach($data as $key => $var) {
-            $output .= '<tr>';
-            foreach($var as $k => $v) {
-                if ($key === 0) {
-                    $output .= '<td><strong>' . $k . '</strong></td>';
-                } else {
-                    $output .= '<td>' . $v . '</td>';
-                }
-            }
-            $output .= '</tr>';
-        }
-        $output .= '</table>';
-        echo $output;
-    }
-
-    function build_list($array) {
-        $list = "<ul>";
-        foreach($array as $key => $value) {
-            if (is_array($value) || is_object($value)) {
-                $list .= "<li><strong>$key</strong>: " . build_list($value) . '</li>';
-            } else $list .= "<li><strong>$key</strong>: $value</li>";
-        }
-        $list .= '</ul>';
-        return $list;
-    }
-
     function process($row){
         $row['children'] = [];
         foreach($GLOBALS['data'] as $i){

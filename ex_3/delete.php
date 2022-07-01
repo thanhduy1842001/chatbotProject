@@ -13,15 +13,37 @@
         return $connect;
     }
 
-    $connect = connect2Server();
+    function findId2Delete($id) {
+        array_push($GLOBALS['Id2Delete'],$id);
+        foreach($GLOBALS['data'] as $i){
+            if($i['parent_id'] == $id) findId2Delete($i['scenario_id']);
+        }
+    }
 
-    $query = "
-    DELETE
-    FROM scenario
-    WHERE scenario_id = ?
-    ";
+    {
+        $connect = connect2Server();
 
-    $statement = $connect->prepare($query);
-    $statement->execute(array($_POST['scenario_id']));
-    echo "success";
+        $query = "
+        SELECT *
+        FROM scenario
+        ORDER BY parent_id ASC
+        ";
+
+        $Id2Delete = [];
+        $statement = $connect->prepare($query);
+        $statement->execute();
+
+        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        findId2Delete($_POST['scenario_id']);
+
+        $query = "
+        DELETE
+        FROM scenario
+        WHERE scenario_id IN (" . implode(',',$Id2Delete) . ")";
+
+        $statement = $connect->prepare($query);
+        $statement->execute();
+        echo "success";
+    }
 ?>

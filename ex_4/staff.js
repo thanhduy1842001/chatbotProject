@@ -50,7 +50,8 @@ $(function() {
                 customer = new Set(customer);
                 $("#to").empty();
                 $("#to").append("<option class='lang' id ='customer' selected disabled>" + dict["customer"][lang] + "</option>");
-                for (let i of customer) $("#to").append("<option>" + i + "</option>");
+                $("#to option:first").prepend("&#xf2bd; ");
+                for (let i of customer) $("#to").append(`<option value="${i}">${i}</option>`);
             } else customer = new Set();
             myName = getCookie("name");
             if (myName != null) {
@@ -176,11 +177,17 @@ $(function() {
                         } else addMessage(json.data.author, json.data.text, new Date(json.data.time));
                         checkKeyword(json.data.text);
                     }
-                    if ($("#contentbox").css("display")=="none" || json.data.author != to || $("#body").css("display")=="none")
-                    $.notify("Nhận được tin nhắn mới từ " + json.data.author,"info");
+                    if ($("#contentbox").css("display")=="none" || json.data.author != to || $("#body").css("display")=="none") {
+                        $.notify("Nhận được tin nhắn mới từ " + json.data.author,"info");
+                        $("#to").find(`option:contains("${json.data.author}")`).addClass("newMess");
+                        let num = $("#to").find(`option:contains("${json.data.author}")`).text().match(/\d+/);
+                        num = (num==null)?1:parseInt(num[0]) + 1;
+                        $("#to").find(`option:contains("${json.data.author}")`).text(json.data.author + `(${num} tin nhắn mới)`);
+                    }
                     if ($("#body").css("display")=="none") {
                         new_message += 1;
-                        $("#new_message").text(new_message);
+                        if (new_message>99) $("#new_message").text("99+");
+                        else $("#new_message").text(new_message);
                         $("#new_message").show();
                     }
                     break;
@@ -190,7 +197,8 @@ $(function() {
                     setCookie("customer", JSON.stringify(Array.from(customer)));
                     $("#to").empty();
                     $("#to").append("<option class='lang' id ='customer' selected disabled>" + dict["customer"][lang] + "</option>");
-                    for (let i of customer) $("#to").append("<option>" + i + "</option>");
+                    $("#to option:first").prepend("&#xf2bd; ");
+                    for (let i of customer) $("#to").append(`<option value="${i}">${i}</option>`);
                     break;
                 case "typing":
                     if (json.data == to) {
@@ -210,7 +218,8 @@ $(function() {
                     setCookie("customer", JSON.stringify(Array.from(customer)));
                     $("#to").empty();
                     $("#to").append("<option class='lang' id ='customer'>" + dict["customer"][lang] + "</option>");
-                    for (let i of customer) $("#to").append("<option>" + i + "</option>");
+                    $("#to option:first").prepend("&#xf2bd; ");
+                    for (let i of customer) $("#to").append(`<option value="${i}">${i}</option>`);
                     break;
                 case "update_SA":
                     getSA()
@@ -405,6 +414,7 @@ $(function() {
             if (tagname != "input") $(this).text(dict[id][lang]);
             else $(this).attr("placeholder", dict[id][lang]);
         });
+        $("#change_language option:first").prepend("&#xf0ac; ");
     });
 
     $("#sign_in").on("click",function() {
@@ -425,7 +435,9 @@ $(function() {
     });
 
     $("#to").on("change",function() {
-        to = $("#to option:selected").text();
+        to = $("#to option:selected").val();
+        $("#to option:selected").removeClass("newMess");
+        $("#to option:selected").text(to);
         setCookie("to", to);
         connection.send("sto: " + to);
         $("#wait_room").hide();
@@ -454,6 +466,10 @@ $(function() {
     });
 
     $("#close").on("click",function(){
+        $("#to option:selected").prop("selected", false);
+        $("#to option:first").prop("selected", "selected");
+        $("#contentbox").hide();
+        $("#up_down").removeClass("fa-arrow-down");
         $("#icon_chat_container").show();
         $("#body").hide();
     });

@@ -99,7 +99,6 @@ $(function() {
             $("#chat").show();
             $("#myname").text(myName);
             $("#staff_info").text(to);
-            if($("#contentbox").css('display') == 'none') $('#up_down').trigger('click');
 
             staff_avatar = generateAvatar(to);
             $("#staff_avatar").html(staff_avatar);
@@ -155,7 +154,8 @@ $(function() {
 
                     if($("#body").css("display")=="none"){
                         new_message += 1;
-                        $("#new_message").text(new_message);
+                        if (new_message>99) $("#new_message").text("99+");
+                        else $("#new_message").text(new_message);
                         $("#new_message").show();
                     }
 
@@ -408,6 +408,7 @@ $(function() {
             if (tagname != "input") $(this).text(dict[id][lang]);
             else $(this).attr("placeholder", dict[id][lang]);
         });
+        $("#change_language option:first").prepend("&#xf0ac; ");
     });
 
     $("#start_chat").on("click",function() {
@@ -488,6 +489,9 @@ $(function() {
     });
 
     $("#close").on("click",function(){
+        $("#to").val("Chọn khách hàng");
+        $("#contentbox").hide();
+        $("#up_down").removeClass("fa-arrow-down");
         $("#icon_chat_container").show();
         $("#body").hide();
     });

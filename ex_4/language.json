@@ -82,5 +82,10 @@
     "language":{
         "en": "Choose language",
         "vi": "Chọn ngôn ngữ"
+    },
+
+    "welcome":{
+        "en": "Have a nice day!",
+        "vi": "Chúc một ngày tốt lành!"
     }
 }
