@@ -192,8 +192,10 @@ $(function() {
                     }
                     break;
                 case "req":
-                    $.notify("Có yêu cầu hỗ trợ mới từ " + json.data,"info");
-                    customer.add(json.data);
+                    if(!customer.has(json.data)){
+                        $.notify("Có yêu cầu hỗ trợ mới từ " + json.data,"info");
+                        customer.add(json.data);
+                    }
                     setCookie("customer", JSON.stringify(Array.from(customer)));
                     $("#to").empty();
                     $("#to").append("<option class='lang' id ='customer' selected disabled>" + dict["customer"][lang] + "</option>");
@@ -411,10 +413,11 @@ $(function() {
         $(".lang").each(function() {
             var id = $(this).attr("id");
             var tagname = $(this).prop("tagName").toLowerCase();
-            if (tagname != "input") $(this).text(dict[id][lang]);
+            if (tagname != "input" && tagname!="textarea") $(this).text(dict[id][lang]);
             else $(this).attr("placeholder", dict[id][lang]);
         });
         $("#change_language option:first").prepend("&#xf0ac; ");
+        $("#to option:first").prepend("&#xf2bd; ");
     });
 
     $("#sign_in").on("click",function() {
