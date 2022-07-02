@@ -169,6 +169,7 @@ function display(){
         else
         addMessage(message.author,message.text,new Date(message.time),i,pos);
     }
+    $('#chatbox').append("<div style='margin-bottom:5px'><div>");
 
     let customer_email = history[id]['customer']['email'];
     let customer_tel = history[id]['customer']['tel'];
