@@ -97,7 +97,7 @@ $(function() {
             $("#end_chat").css('display','flex');
             $("#input_info").hide();
             $("#chat").show();
-            $("#myname").text(myName);
+            $("#myname").text(" " + myName);
             $("#staff_info").text(to);
 
             staff_avatar = generateAvatar(to);

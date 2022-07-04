@@ -424,7 +424,7 @@ $(function() {
         if (check_valid()) return;
         let name = $("#fullname").val();
         setCookie("name", name);
-        $("#myname").text(name);
+        $("#myname").text(" " + myName);
         $('#up_down').trigger('click');
         $("#up_down").hide();
         $.notify("Đăng nhập thành công","success");

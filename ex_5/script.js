@@ -117,7 +117,7 @@ function addMessageAvatar(author, message, dt, i , pos) {
         );
     }
 
-    if(i==pos || pos==-1) content.scrollTop(content[0].scrollHeight);
+    // if(i==pos || pos==-1) content.scrollTop(content[0].scrollHeight);
 }
 
 function addMessage(author, message, dt, i , pos) {
@@ -154,7 +154,7 @@ function addMessage(author, message, dt, i , pos) {
         );
     }
 
-    if(i==pos || pos==-1) content.scrollTop(content[0].scrollHeight);
+    // if(i==pos || pos==-1) content.scrollTop(content[0].scrollHeight);
 }
 
 function display(){
@@ -170,6 +170,7 @@ function display(){
         addMessage(message.author,message.text,new Date(message.time),i,pos);
     }
     $('#chatbox').append("<div style='margin-bottom:5px'><div>");
+    $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
 
     let customer_email = history[id]['customer']['email'];
     let customer_tel = history[id]['customer']['tel'];
@@ -254,10 +255,10 @@ $("#select").on('click','.row-select',function(){
     });
 
     id = $(this).attr("id");
-    display();
     $(this).addClass("on-select");
     $("#chat_info").show();
     $("#chatbox").show();
+    display();
 });
 
 $("#search").on('input',function(){
