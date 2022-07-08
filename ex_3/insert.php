@@ -27,21 +27,18 @@
     $connect = connect2Server();
     $typeId = get_typeId($connect);
     $query = "
-    INSERT INTO scenario (title, content, type_id, url, image, file_name, action, phong_ban, nhan_vien, next_jump, parent_id)
-    VALUES(:title, :content, :type_id, :url, :image, :file_name, :action, :phong_ban, :nhan_vien, :next_jump, :parent_id);
+    INSERT INTO scenario (title, content, type_id, url, image, action, next_jump, parent_id)
+    VALUES(:title, :content, :type_id, :url, :image, :action, :next_jump, :parent_id);
     ";
     $statement = $connect->prepare($query);
     $statement->execute(
         array(
             ':title' => $_POST['title'],
             ':content' => $_POST['content'],
-            ':type_id' => intval($typeId[$_POST['type']]),
+            ':type_id' => $_POST['type_id'],
             ':url' => $_POST['url'],
             ':image' => $_POST['image'],
-            ':file_name' => $_POST['file_name'],
             ':action' => $_POST['action'],
-            ':phong_ban' => $_POST['phong_ban'],
-            ':nhan_vien' => $_POST['nhan_vien'],
             ':next_jump' => $_POST['next_jump'],
             ':parent_id' => $_POST['parent_id']
         )

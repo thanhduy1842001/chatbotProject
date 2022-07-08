@@ -182,7 +182,7 @@ $(function() {
                         $("#to").find(`option:contains("${json.data.author}")`).addClass("newMess");
                         let num = $("#to").find(`option:contains("${json.data.author}")`).text().match(/\d+/);
                         num = (num==null)?1:parseInt(num[0]) + 1;
-                        $("#to").find(`option:contains("${json.data.author}")`).text(json.data.author + `(${num} tin nhắn mới)`);
+                        $("#to").find(`option:contains("${json.data.author}")`).text(json.data.author + ` (${num} tin nhắn mới)`);
                     }
                     if ($("#body").css("display")=="none") {
                         new_message += 1;
@@ -400,12 +400,25 @@ $(function() {
     $("#open_chat_box").on("click",function() {
         $("#contentbox").slideToggle("fast");
         $("#up_down").toggleClass("fa-arrow-down");
+        content.scrollTop(content[0].scrollHeight);
+
+        to = $("#to option:selected").val();
+        if (to != -1) {
+        $("#to option:selected").removeClass("newMess");
+        $("#to option:selected").text(to);
+        }
     });
 
     $("#up_down").on("click",function() {
         $("#contentbox").slideToggle("fast");
         $("#up_down").toggleClass("fa-arrow-down");
         content.scrollTop(content[0].scrollHeight);
+        
+        to = $("#to option:selected").val();
+        if (to != -1) {
+        $("#to option:selected").removeClass("newMess");
+        $("#to option:selected").text(to);
+        }
     });
 
     $("#change_language").on("change",function() {
@@ -424,7 +437,7 @@ $(function() {
         if (check_valid()) return;
         let name = $("#fullname").val();
         setCookie("name", name);
-        $("#myname").text(" " + myName);
+        $("#myname").text(" " + name);
         $('#up_down').trigger('click');
         $("#up_down").hide();
         $.notify("Đăng nhập thành công","success");

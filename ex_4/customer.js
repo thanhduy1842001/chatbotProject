@@ -5,9 +5,7 @@ $(function() {
     var input = $("#message");
     var lang;
     var to = -1;
-    var timeout = 500;
     var typing_time;
-    var t = 0;
     var staff_avatar;
     var customer_avatar;
     var new_message = 0;
@@ -187,6 +185,9 @@ $(function() {
                     setCookie("color",color);
                     input.show();
                     break;
+                case "timeout":
+                    $.notify("Nếu quý khách không còn gì để trao đổi thì cuộc chat sẽ kết thúc sau 1 phút nữa");
+                    break;
                 default:
                     console.log("Hmm..., I\"ve never seen JSON like this:", json);
                     break;
@@ -254,7 +255,6 @@ $(function() {
             connection.send(msg);
             $(this).val("");
             $('#form').remove();
-            t = 0;
         }
     });
 
@@ -371,7 +371,6 @@ $(function() {
         if (myName != false && to != -1) {
             connection.send("typing");
         }
-        t = 0;
     })
 
     $("input, textarea").each(function() {
@@ -387,12 +386,13 @@ $(function() {
     $("#open_chat_box").on("click",function() {
         $("#contentbox").slideToggle("fast");
         $("#up_down").toggleClass("fa-arrow-down");
+        content.scrollTop(content[0].scrollHeight);
     });
 
     $("#up_down").on("click",function() {
-        content.scrollTop(content[0].scrollHeight);
         $("#contentbox").slideToggle("fast");
         $("#up_down").toggleClass("fa-arrow-down");
+        content.scrollTop(content[0].scrollHeight);
     });
 
     $("#volume").on("click",function() {
@@ -446,15 +446,11 @@ $(function() {
         $('#form').remove();
     });
 
-    $('#chatbox').on('click', 'img', function() {
+    $('#chatbox').on('click', 'span img', function() {
         var src = $(this).attr('src');
         $.fancybox.open({
             src  : src
         });
-    });
-
-    $(document).on("mousemove",function(event) {
-        t = 0;
     });
 
     $("#chatbox").on('focusout','input',function(event){
@@ -464,17 +460,6 @@ $(function() {
     $("#chatbox").on('focusin','input',function(event){
         $(this).addClass('change-input');
     });
-
-    // setInterval(function() { // Chat timeout
-    //     if (getCookie("name") != null) t += 1;
-
-    //     if (t == timeout) {
-    //         connection.send("end_chat");
-    //         t = 0;
-    //     } else if (t == timeout - 10) {
-    //         $.notify("Nếu quý khách không còn gì trao đổi thì cuộc chat sẽ kết thúc sau 10s nữa","warn");
-    //     }
-    // }, 1000);
 
     setInterval(function() { // typing timeout
         if (typing_time == 0) $("#typing").hide();

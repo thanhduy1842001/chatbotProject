@@ -494,7 +494,7 @@ button:hover {
     z-index: 1;
 }
 
-#chatbox img:hover{
+#chatbox span img:hover{
     cursor: zoom-in;
 }
 

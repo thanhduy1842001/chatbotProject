@@ -150,13 +150,7 @@ input:focus::placeholder {
 color: transparent;
 }
 
-.search {
-width: 255px;
-height: 25px;
-border-radius: 4px;
-background-color: #262626;
-color: white;
-}
+.search {width: 255px;height: 25px;border-radius: 4px;background-color: #262626;color: white;padding-left: 5px;}
 
 #search-box {
 padding: 5px;

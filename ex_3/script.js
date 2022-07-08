@@ -1,10 +1,12 @@
 var connection;
+var scenario = {};
+var id = false;
 
 function get_options(data)
 {
+    scenario[data['scenario_id']] = data;
     options = "<option value=" + data['scenario_id'] + ">" + data['title'] + "</option>";
-    if(data['children'].length) 
-    {
+    if(data['children'].length) {
         for(let row of data['children']) options+=get_options(row);
     }
     return options;
@@ -28,7 +30,6 @@ function getdata(){
             options = get_options(jsonObj);
             $('.id').each(function(){
                 $(this).find('option').not(':first').remove();
-                $(this).append(`<option value="${0}">Root</option>`);
                 $(this).append(options);
             });
         }
@@ -36,6 +37,14 @@ function getdata(){
 }
 
 $(document).on("ready",function(){
+
+    $("#select_box .guide").on("click",function(){
+        $.notify("Click vào 1 nhánh trên cây kịch bản để xem thông tin và chỉnh sửa",{
+            className: "info",
+            autoHideDelay: 5000,
+        });
+    });
+
     function connect() {
         connection = new WebSocket("ws://172.16.90.133:1337");
 
@@ -46,78 +55,86 @@ $(document).on("ready",function(){
         };
     }
 
-    $('#insert_form').on('submit', function(event){
-        event.preventDefault();
-        $.ajax({
-            url: "insert.php",
-            type: "post",
-            data: new FormData(this),
-            contentType:false,
-            cache:false,
-            processData:false,
-            beforeSend:function(){
-                $('#submit2').attr('disabled',true),
-                $('#submit2').text('Đang xử lí ...');
-            },
-            success:function(data){
-                if(data=="success") $.notify("Thêm kịch bản thành công","success");
-                else $.notify("Thêm kịch bản thất bại");
-                $('#insert_form')[0].reset();
-                $('#submit2').removeAttr("disabled");
-                $('#submit2').html('<i class="fa fa-save"></i> Lưu');
-                getdata();
-                connection.send('update_script');
+    $("#add").on("click",function(){
+        if(!id) {
+            $.notify("Xin hãy chọn 1 nhánh trên cây kịch bản trước khi thực hiện thao tác");
+            return;
+        }
+        $('#insert_form')[0].reset();
+        $("#insert_form #next_jump").hide();
+        $.fancybox.open({
+            src  : '#insert_form',
+            type : 'inline',
+            opts : {
             }
         });
     });
 
-    $('#update_form').on('submit', function(event){
-        event.preventDefault();
+    $('#update').on('click', function(){
+        if(!id) {
+            $.notify("Xin hãy chọn 1 trong các nhánh trước khi thực hiện thao tác");
+            return;
+        }
         $.ajax({
             url: "update.php",
             type: "post",
-            data: new FormData(this),
-            contentType:false,
-            cache:false,
-            processData:false,
+            data: {
+                scenario_id: id,
+                title: $("#update_form #title").val(),
+                content: $("#update_form #content").val(),
+                type_id: $("#update_form #type_id").val(),
+                url: $("#update_form #url").val(),
+                image: $("#update_form #image").val(),
+                action: $("#update_form #action").val(),
+                next_jump: $("#update_form #next_jump").val(),
+            },
             beforeSend:function(){
                 $('#submit3').attr('disabled',true),
                 $('#submit3').text('Đang xử lí ...');
             },
             success:function(data){
-                console.log(data);
+                id = false;
                 if(data == "success") $.notify("Sửa kịch bản thành công","success");
                 else $.notify("Sửa kịch bản thất bại");
                 $("#message").html(data);
                 $('#update_form')[0].reset();
-                $('#submit3').removeAttr("disabled");
-                $('#submit3').html('<i class="fa fa-save"></i> Lưu');
+                $("#features").hide();
+                $('#update').removeAttr("disabled");
+                $('#update').html('<i class="fa fa-pencil"></i> Thay đổi nhánh');
                 getdata();
                 connection.send('update_script');
             }
         });
     });
 
-    $('#delete_form').on('submit', function(event){
-        event.preventDefault();
-        if (confirm(`Bạn có chắc chắn muốn xóa nhánh kịch bản này`) == true){
+    $("#remove").on("click",function(){
+        if(!id) {
+            $.notify("Xin hãy chọn 1 nhánh trên cây kịch bản trước khi thực hiện thao tác");
+            return;
+        }
+
+        if(scenario[id]['parent_id'] == -1) {
+            $.notify("Không thể xóa nhánh gốc");
+            return;
+        }
+
+        if (confirm(`Bạn có chắc chắn muốn xóa nhánh này`) == true){
             $.ajax({
                 url: "delete.php",
                 type: "post",
-                data: new FormData(this),
-                contentType:false,
-                cache:false,
-                processData:false,
+                data: {'scenario_id': id},
                 beforeSend:function(){
-                    $('#submit4').attr('disabled',true),
-                    $('#submit4').text('Đang xử lí ...');
+                    $("#remove").attr('disabled',true),
+                    $("#remove").text('Đang xử lí ...');
                 },
                 success:function(data){
+                    id = false;
                     if(data=="success") $.notify("Xóa kịch bản thành công","success");
                     else $.notify("Xóa kịch bản thất bại");
                     $('#update_form')[0].reset();
-                    $('#submit4').removeAttr("disabled");
-                    $('#submit4').html('<i class="fa fa-save"></i> Lưu');
+                    $("#features").hide();
+                    $("#remove").removeAttr("disabled");
+                    $("#remove").html('<i class="fa fa-trash"></i> Xóa nhánh');
                     getdata();
                     connection.send('update_script');
                 }
@@ -125,22 +142,82 @@ $(document).on("ready",function(){
         }
     });
 
-    $("#add").on("click",function(){
-        $("#insert_form").toggle();
-        $("#delete_form").hide();
-        $("#update_form").hide();
+    $("#chart_container").on("click",".node",function(){
+        id = $(this).attr("id");
+        attr = ["title","content","type_id","url","image","action","next_jump"];
+
+        for(let i of attr){
+            $("#update_form #" + i).val(scenario[id][i]).change();
+        }
+
+        $("#features").show();
     });
 
-    $("#remove").on("click",function(){
-        $("#delete_form").toggle();
-        $("#insert_form").hide();
-        $("#update_form").hide();
+    $("#insert_form").on("submit",function(event){
+        $.fancybox.close();
+        event.preventDefault();
+        $.ajax({
+            url: "insert.php",
+            type: "post",
+            data: {
+                title: $("#insert_form #title").val(),
+                content: $("#insert_form #content").val(),
+                type_id: $("#insert_form #type_id").val(),
+                url: $("#insert_form #url").val(),
+                image: $("#insert_form #image").val(),
+                action: $("#insert_form #action").val(),
+                next_jump: $("#insert_form #next_jump").val(),
+                parent_id: id
+            },
+            beforeSend:function(){
+                $('#add').attr('disabled',true),
+                $('#add').text('Đang xử lí ...');
+            },
+            success:function(data){
+                console.log(data);
+                id = false;
+                if(data=="success") $.notify("Thêm kịch bản thành công","success");
+                else $.notify("Thêm kịch bản thất bại");
+                $('#update_form')[0].reset();
+                $("#features").hide();
+                $('#add').removeAttr("disabled");
+                $('#add').html('<i class="fa fa-plus-circle"></i> Thêm nhánh con');
+                getdata();
+                connection.send('update_script');
+            }
+        });
     });
 
-    $("#edit").on("click",function(){
-        $("#update_form").toggle();
-        $("#delete_form").hide();
-        $("#insert_form").hide();
+    $("#insert_form #action").on("change",function(){
+        action = $("#insert_form #action").val();
+        console.log(action);
+        if(action == "jump") {
+            $("#insert_form #next_jump").show();
+            $("#insert_form #next_jump option:first").attr("value", "");
+            $("#insert_form #next_jump option:first").attr("disabled", 'disabled');
+        }
+        else {
+            $("#insert_form #next_jump").hide();
+            $("#insert_form #next_jump option:first").attr("value", 0);
+            $("#insert_form #next_jump option:first").removeAttr("disabled");
+            $("#insert_form #next_jump").val(0);
+        }
+    });
+
+    $("#update_form #action").on("change",function(){
+        action = $("#update_form #action").val();
+        console.log(action);
+        if(action == "jump") {
+            $("#update_form #next_jump").show();
+            $("#update_form #next_jump option:first").attr("value", "");
+            $("#update_form #next_jump option:first").attr("disabled", 'disabled');
+        }
+        else {
+            $("#update_form #next_jump").hide();
+            $("#update_form #next_jump option:first").attr("value", 0);
+            $("#update_form #next_jump option:first").removeAttr("disabled");
+            $("#update_form #next_jump").val(0);
+        }
     });
 
     getdata();

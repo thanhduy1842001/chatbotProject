@@ -127,7 +127,7 @@ wsServer.on("request", function(request) {
                         mailOptions.text += history[historyName][i].author + ": " + history[historyName][i].text + "\n";
                         pos = i;
                     }
-                    mailOptions.text += "Link to chat history: " + "http://localhost/ex_5?id=" + id + "&pos=" + pos.toString();
+                    mailOptions.text += "Link to chat history: " + "http://localhost/chatbotProject/ex_5/?id=" + id + "&pos=" + pos.toString();
                     transporter.sendMail(mailOptions, function(error, info) {
                         if (error) console.log(error);
                         else console.log("Email sent: " + info.response);
@@ -188,14 +188,43 @@ wsServer.on("request", function(request) {
         return obj;
     }
 
+    function end_chat_process(){
+        var json = JSON.stringify(history[historyName]);
+        var s = (to != "Chatbot")?to:"";
+        var sql = "INSERT INTO history (staff,customer,json) VALUES ?";
+        var values = [
+            [s,JSON.stringify(customer),json]
+        ];
+        con.query(sql, [values], function(err, result) {
+            if (err) throw err;
+            console.log((new Date()) + " Insert successfully");
+            sendEmail(result.insertId);
+        });
+
+        clients[from].sendUTF(JSON.stringify({
+            type: "end_chat"
+        }));
+
+        if (to != "Chatbot") {
+            clients[to].sendUTF(JSON.stringify({
+                type: "end_chat",
+                data: from
+            }));
+        }
+
+        if(admin) admin.send("new_chat");
+    }
+
     var connection = request.accept(null, request.origin);
-    var customer;
+    var customer = false;
     var from = false;
     var to;
+    var timeout = false;
     var historyName;
     console.log((new Date()) + " Connection accepted.");
 
     connection.on("message", function(message) {
+        timeout = 300; // 5 minutes
         if (message.type === "utf8") {
             switch (message.utf8Data) {
                 case "admin":
@@ -203,26 +232,7 @@ wsServer.on("request", function(request) {
                     console.log((new Date()) + " " + "Admin connected");
                     break;
                 case "end_chat":
-                    var json = JSON.stringify(history[historyName]);
-                    var s = (to != "Chatbot")?to:"";
-                    var sql = "INSERT INTO history (staff,customer,json) VALUES ?";
-                    var values = [
-                        [s,JSON.stringify(customer),json]
-                    ];
-                    con.query(sql, [values], function(err, result) {
-                        if (err) throw err;
-                        console.log((new Date()) + " Insert successfully");
-                        sendEmail(result.insertId);
-                    });
-                    clients[from].sendUTF(JSON.stringify({
-                        type: "end_chat"
-                    }));
-                    if (to != "Chatbot")
-                        clients[to].sendUTF(JSON.stringify({
-                            type: "end_chat",
-                            data: from
-                    }));
-                    if(admin) admin.send("new_chat");
+                    end_chat_process();
                     break;
                 case "update_script":
                     updateScript();
@@ -345,6 +355,26 @@ wsServer.on("request", function(request) {
             }
         }
     });
+
+    setInterval(function() { // Chat timeout
+        if(customer){
+            timeout-=1;
+            switch(timeout){
+                case 0:
+                    end_chat_process();
+                    customer = false;
+                    break;
+                case 60:
+                    clients[from].sendUTF(JSON.stringify({
+                        type: "timeout",
+                    }));
+                    break;
+                default:
+                    console.log(from + ": " + timeout);
+                    break;
+            }
+        }
+    }, 1000);
 
     connection.on("close", function(connection) {
         if (from !== false && to != -1) {

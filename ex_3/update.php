@@ -24,7 +24,7 @@
     }
 
     function set(){
-        $attr = ['scenario_id', 'content', 'type_id', 'url', 'image', 'file_name', 'action', 'phong_ban', 'nhan_vien', 'next_jump', 'parent_id'];
+        $attr = ['title', 'content', 'type_id', 'url', 'image', 'action', 'next_jump'];
         $res = array_map('map', $attr);
         $res = array_filter($res, "not_blank");
         $res = implode(',', $res);

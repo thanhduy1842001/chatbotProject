@@ -11,7 +11,7 @@
     <body>
         <div id="select_box">
             <div id = "task_bar">
-                <i class="fa fa-bars icon" id = "task_bar">
+                <i class="fa fa-bars icon" id = "dropdown">
                     <div class="dropdown-content">
                       <a href="http://localhost/chatbotProject/ex_5/">
                         <i class="fa fa-comments icon"></i>
@@ -27,92 +27,69 @@
                       </a>
                     </div>
                 </i>
-                <b>Cập nhật kịch bản:</b>
-            </div>
-            <div id="feature" class="column">
-                <button id="add">
-                    <i class="fa fa-plus-circle"></i>
-                    Thêm kịch bản
-                </button>
-                <button id="edit">
-                    <i class="fa fa-pencil"></i>
-                    Sửa kịch bản
-                </button>
-                <button id="remove">
-                    <i class="fa fa-trash"></i>
-                    Xóa kịch bản
-                </button>
+                <i class="fa fa-question-circle guide" aria-hidden="true" title="Hướng dẫn"></i>
+                <b>Thông tin kịch bản:</b>
             </div>
             <div id= "form_container">
+                Thông tin nhánh:
                 <form method="post" id="insert_form" enctype="multipart/form-data" style="display:none;">
-                    <input type="text" id='title' name="title" placeholder="Nhập tên nhánh" required><br>
-    
-                    <input type="text" id='content' name="content" placeholder="Nhập nội dung trả lời" required><br>
-    
-                        <select name="type" id="type" required>
-                            <option selected value="">Chọn sự kiện</option>
-                            <option value="Button">Button</option>
-                            <option value="Text">Text</option>
-                            <option value="Staff">Staff</option>
-                        </select><br>
-
-                    <input type="text" id='url' name="url" placeholder="Nhập URL"><br>
-                    <input type="text" id='image' name="image" placeholder="Nhập link hình ảnh"><br>
-                    <input type="text" id='file_name' name="file_name" placeholder="Nhập tên file"><br>
-                    <input type="text" id='action' name="action" placeholder="Nhập hành động" value="0"><br>
-                    <input type="number" id='phong_ban' name="phong_ban" placeholder="Nhập ID phòng ban" value=0><br>
-                    <input type="number" id='nhan_vien' name="nhan_vien" placeholder="Nhập ID nhân viên" value=0><br>
-                    <select name="next_jump" id="next_jump" class="id">
-                        <option selected value=0>Chọn sự kiện kế tiếp</option>
-                    </select><br>
-                    <select name="parent_id" id="parent_id" class="id" required>
-                        <option selected>Chọn nhánh cha</option>
-                    </select><br>
+                    <input type="text" id='title' name="title" placeholder="Nhập tên nhánh" required>
+                    <input type="text" id='content' name="content" placeholder="Nhập nội dung trả lời" required>
+                    <select name="type_id" id="type_id" required>
+                        <option selected disabled value="">Chọn sự kiện</option>
+                        <option value=1>Button</option>
+                        <option value=2>Text</option>
+                        <option value=3>Staff</option>
+                    </select>
+                    <input type="text" id='url' name="url" placeholder="Nhập liên kết web">
+                    <input type="text" id='image' name="image" placeholder="Nhập liên kết hình ảnh">
+                    <select id='action' name="action" required>
+                        <option selected disabled value="">Chọn hành động</option>
+                        <option value="jump">Nhảy</option>
+                        <option value="0">Không có</option>
+                    </select>
+                    <select name="next_jump" id="next_jump" class="id" style="display:none;" required>
+                        <option selected value=0 disabled>Nhánh kế tiếp</option>
+                    </select>
                     <button type="submit" name="submit" class="submit" id="submit2" value="Lưu">
                         <i class="fa fa-save"></i>
                         Lưu
                     </button>
                 </form>
-                <form method="post" id="update_form" enctype="multipart/form-data" style="display:none">
-                    <select name="scenario_id" id="scenario_id" class="id" required>
-                        <option selected value="">Chọn tên nhánh</option>
-                    </select><br>
-        
-                    <input type="text" id='content' name="content" placeholder="Nhập nội dung trả lời"><br>
-        
-                    <select name="type_id" id="type_id">
-                        <option value="">Chọn sự kiện</option>
+                <form method="post" id="update_form" enctype="multipart/form-data">
+                    <input name="title" id="title" placeholder="Tên nhánh" title="Tên nhánh">
+                    <input type="text" id='content' name="content" placeholder="Nội dung trả lời" title="Nội dung trả lời">
+                    <select name="type_id" id="type_id" title="Loại hiển thị">
+                        <option value=0>Loại hiển thị</option>
                         <option value=1>Button</option>
                         <option value=2>Text</option>
                         <option value=3>Staff</option>
+                    </select>
+                    <input type="text" id='url' name="url" placeholder="Liên kết web" title="Liên kết web">
+                    <input type="text" id='image' name="image" placeholder="Hình ảnh"  title="Hình ảnh">
+                    <select id='action' name="action" required title="Hành động">
+                        <option selected disabled value="">Hành động</option>
+                        <option value="jump">Nhảy</option>
+                        <option value="0">Không có</option>
+                    </select>
+                    <select name="next_jump" id="next_jump" class="id" title="Nhánh kế tiếp" style="display:none;">
+                        <option selected value=0>Nhánh kế tiếp</option>
                     </select><br>
-        
-                    <input type="text" id='url' name="url" placeholder="Nhập URL"><br>
-                    <input type="text" id='image' name="image" placeholder="Nhập link hình ảnh"><br>
-                    <input type="text" id='file_name' name="file_name" placeholder="Nhập tên file"><br>
-                    <input type="text" id='action' name="action" placeholder="Nhập hành động"><br>
-                    <input type="number" id='phong_ban' name="phong_ban" placeholder="Nhập ID phòng ban"><br>
-                    <input type="number" id='nhan_vien' name="nhan_vien" placeholder="Nhập ID nhân viên"><br>
-                    <select name="next_jump" id="next_jump" class="id">
-                        <option selected value="">Chọn sự kiện kế tiếp</option>
-                    </select><br>
-                    <select name="parent_id" id="parent_id" class="id">
-                        <option value="">Chọn nhánh cha</option>
-                    </select><br>
-                    <button type="submit" name="submit" class="submit" id="submit3">
-                        <i class="fa fa-save"></i>
-                        Lưu
-                    </button>
                 </form>
-                <form method="post" id="delete_form" enctype="multipart/form-data" style="display:none">
-                    <select name="scenario_id" id="scenario_id" class="id" required>
-                        <option selected value="">Chọn tên nhánh</option>
-                    </select><br>
-                    <button type="submit" name="submit" id="submit4" value="Lưu">
-                        <i class="fa fa-save"></i>
-                        Lưu
-                    </button>
-                </form>
+            </div>
+            <div id="features" style="display:none;">
+                <button id="update">
+                    <i class="fa fa-pencil"></i>
+                    Thay đổi nhánh
+                </button>
+                <button id="remove">
+                    <i class="fa fa-trash"></i>
+                    Xóa nhánh
+                </button>
+                <button id="add">
+                    <i class="fa fa-plus-circle"></i>
+                    Thêm nhánh con
+                </button>
             </div>
         </div>
         <div id = "chart_container"></div>
