@@ -356,25 +356,25 @@ wsServer.on("request", function(request) {
         }
     });
 
-    setInterval(function() { // Chat timeout
-        if(customer){
-            timeout-=1;
-            switch(timeout){
-                case 0:
-                    end_chat_process();
-                    customer = false;
-                    break;
-                case 60:
-                    clients[from].sendUTF(JSON.stringify({
-                        type: "timeout",
-                    }));
-                    break;
-                default:
-                    console.log(from + ": " + timeout);
-                    break;
-            }
-        }
-    }, 1000);
+    // setInterval(function() { // Chat timeout
+    //     if(customer){
+    //         timeout-=1;
+    //         switch(timeout){
+    //             case 0:
+    //                 end_chat_process();
+    //                 customer = false;
+    //                 break;
+    //             case 60:
+    //                 clients[from].sendUTF(JSON.stringify({
+    //                     type: "timeout",
+    //                 }));
+    //                 break;
+    //             default:
+    //                 console.log(from + " - countdown: " + timeout);
+    //                 break;
+    //         }
+    //     }
+    // }, 1000);
 
     connection.on("close", function(connection) {
         if (from !== false && to != -1) {

@@ -129,19 +129,7 @@ display: flex;
 align-items: center;
 /* color: #8e103b; */}
 
-.avatar {
-display: flex;
-border: 2px solid gray;
-border-radius: 50%;
-width: 35px;
-height: 35px;
-margin: 3px;
-float: left;
-color: white;
-font-weight: bold;
-align-items: center;
-justify-content: center;
-}
+.avatar {display: flex;border: 1px solid gray;border-radius: 50%;width: 35px;height: 35px;margin: 3px;margin-right: 10px;float: left;color: white;font-weight: bold;align-items: center;justify-content: center;}
 
 #chatbox {
 height: 300px;
@@ -212,11 +200,7 @@ display: flex;
 float: right;
 }
 
-#change_language {
-margin-left: 10px;
-font-size: 12px;
-padding: 3px;border-radius: 0.25em;/* color: #ffffff; */
-/* background-color: #dd1a5b; */}
+#change_language {font-size: 12px;padding: 7px 10px;border-radius: 0.25em;background-color: white;}
 
 #footer {
 background-color: white;
@@ -243,16 +227,15 @@ text-decoration: none;
     margin-right: 5px;
     padding: 7px 10px;
     border-radius: 0.25em;
-    border: none;font-size: 12px;cursor: pointer;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
     display: none;
     align-items: center;
     justify-content: center;
 }
 
-#to {
-margin-left: auto;
-max-width: 135px;
-}
+#to {margin-left: auto;width: 154px;padding: 7px 10px;}
 
 #typing {
 font-size: 13px;
@@ -507,6 +490,12 @@ select{
     font-family: fontAwesome
 }
 
+#contact_container{
+    display: flex;
+    padding: 7px 10px 7px 0px;
+}
+
 #contact{
     margin-left: 5px;
+    margin-top: 1px;
 }
