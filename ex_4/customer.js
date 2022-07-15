@@ -76,7 +76,7 @@ $(function() {
     // open connection
     
     function connect() {
-        connection = new WebSocket("ws://172.16.90.133:1337");
+        connection = new WebSocket("wss://26ad-115-78-131-187.ap.ngrok.io");
         connection.onopen = function() {
             //first we want users to enter their names
             myName = getCookie("name");
@@ -268,20 +268,22 @@ $(function() {
         var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
               (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
       
+                (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+        
         if(author != myName){
-          content.append(`
-          <div class="row_customer">
-              ${avatar}
-              <div class="chat-customer-message left" style="margin-top:20px;">
-                  <b> ${author}</b>
-                  <div style="white-space: pre-line;">${message}</div>
-                  <div class="time">
-                      <i class="fa fa-clock-o" style="padding:3px"></i>
-                      ${time}
-                  </div>
-              </div>
-          </div>`
-          );
+            content.append(`
+            <div class="row_customer">
+                ${avatar}
+                <div class="chat-customer-message left"  style="margin-top:20px;">
+                    <b> ${author}</b>
+                    <div style="white-space: pre-line;">${message}</div>
+                    <div class="time">
+                        <i class="fa fa-clock-o" style="padding:3px"></i>
+                        ${time}
+                    </div>
+                </div>
+            </div>`
+            );
         } else {
           content.append(`
           <div class="row-staff">
@@ -306,10 +308,12 @@ $(function() {
         var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
               (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
       
+                (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+        
         if(author != myName){
           content.append(`
           <div class="row_customer">
-              <div class="chat-customer-message" style="margin-left:55px">
+              <div class="chat-customer-message" style="margin-left:60px">
                   <b> ${author}</b>
                   <div style="white-space: pre-line;">${message}</div>
                   <div class="time">
@@ -322,7 +326,7 @@ $(function() {
         } else {
           content.append(`
           <div class="row-staff">
-              <div class="chat-staff-message" style="margin-right:55px">
+              <div class="chat-staff-message" style="margin-right:60px">
                   <b> ${author}</b>
                   <div style="white-space: pre-line;">${message}</div>
                   <div class="time">
@@ -335,7 +339,7 @@ $(function() {
         }
         content.scrollTop(content[0].scrollHeight);
     }
-    
+
     function check_valid() {
         var check = false;
         var name = $("#fullname").val();
@@ -346,9 +350,16 @@ $(function() {
             $.notify("Họ và tên không được chứa số", "error");
             return true;
         }
+        
         if (name.length == 0) {
             $("#fullname").addClass("error-input");
             $.notify("Họ và tên không được để trống", "error");
+            return true;
+        }
+
+        if (name.length > 50) {
+            $("#fullname").addClass("error-input");
+            $.notify("Họ và tên quá dài", "error");
             return true;
         }
 

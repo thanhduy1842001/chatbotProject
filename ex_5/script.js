@@ -1,7 +1,7 @@
 var connection;
 
 function connect(){
-    connection = new WebSocket("ws://172.16.90.133:1337");
+    connection = new WebSocket("wss://99ef-14-187-113-141.ap.ngrok.io");
 
     connection.onopen = function() {
         connection.send("admin");
@@ -128,7 +128,7 @@ function addMessage(author, message, dt, i , pos) {
     
     if(author == customer){
         content.append(`
-        <div class="row_customer" style="margin-left:45px">
+        <div class="row_customer" style="margin-left:42px">
             <div class="chat-customer-message">
                 <b> ${author}</b>
                 <div style="white-space: pre-line;">${message}</div>
@@ -141,7 +141,7 @@ function addMessage(author, message, dt, i , pos) {
         );
     } else {
         content.append(`
-        <div class="row-staff" style="margin-right:45px">
+        <div class="row-staff" style="margin-right:42px">
             <div class="chat-staff-message">
                 <b> ${author}</b>
                 <div style="white-space: pre-line;">${message}</div>

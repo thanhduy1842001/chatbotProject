@@ -156,10 +156,10 @@ button {
 }
 
 table {
-  margin-top: 5px;
+  display: block;
+  margin-top: 15px;
   border-collapse: collapse;
-  width: 100%;
-  max-height: 595px;
+  max-height: 650px;
   overflow-y: scroll;
 }
 
@@ -295,7 +295,7 @@ textarea {
 
 .listSA {
   width: 100%;
-  margin-top: 5px;
+  margin-top: 10px;
   margin-right: 5px;
 }
 

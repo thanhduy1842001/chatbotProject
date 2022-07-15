@@ -132,7 +132,7 @@ $(function() {
 
     // open connection
     function connect() {
-        connection = new WebSocket("ws://172.16.90.133:1337");
+        connection = new WebSocket("wss://26ad-115-78-131-187.ap.ngrok.io");
         connection.onopen = function() {
             //first we want users to enter their names
             myName = getCookie("name");
@@ -282,81 +282,84 @@ $(function() {
 
     //Add message to the chat window
     function addMessageAvatar(author, message, dt) {
-    var avatar;
-    if(author == "Chatbot") avatar = `<img src="https://livechat.pavietnam.vn/images/conong.png" class="avatar">`;
-    else avatar = staff_avatar;
-    var content = $('#chatbox');
-
-    var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
-            (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
-
-    if(author != myName){
-        content.append(`
-        <div class="row_customer">
-            ${avatar}
-            <div class="chat-customer-message left" style="margin-top:20px;">
-                <b> ${author}</b>
-                <div style="white-space: pre-line;">${message}</div>
-                <div class="time">
-                    <i class="fa fa-clock-o" style="padding:3px"></i>
-                    ${time}
+        var avatar;
+        if(author == "Chatbot") avatar = `<img src="https://livechat.pavietnam.vn/images/conong.png" class="avatar">`;
+        else avatar = staff_avatar;
+        var content = $('#chatbox');
+    
+        var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
+              (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+      
+                (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+        
+        if(author != myName){
+            content.append(`
+            <div class="row_customer">
+                ${avatar}
+                <div class="chat-customer-message left"  style="margin-top:20px;">
+                    <b> ${author}</b>
+                    <div style="white-space: pre-line;">${message}</div>
+                    <div class="time">
+                        <i class="fa fa-clock-o" style="padding:3px"></i>
+                        ${time}
+                    </div>
                 </div>
-            </div>
-        </div>`
-        );
-    } else {
-        content.append(`
-        <div class="row-staff">
-            <div class="chat-staff-message right" style="margin-top:20px;">
-                <b> ${author}</b>
-                <div style="white-space: pre-line;">${message}</div>
-                <div class="time">
-                    <i class="fa fa-clock-o" style="padding:3px"></i>
-                    ${time}
-                </div>
-            </div>
-            ${customer_avatar}
-        </div>`
-        );
+            </div>`
+            );
+        } else {
+          content.append(`
+          <div class="row-staff">
+              <div class="chat-staff-message right" style="margin-top:20px;">
+                  <b> ${author}</b>
+                  <div style="white-space: pre-line;">${message}</div>
+                  <div class="time">
+                      <i class="fa fa-clock-o" style="padding:3px"></i>
+                      ${time}
+                  </div>
+              </div>
+              ${customer_avatar}
+          </div>`
+          );
+        }
+        content.scrollTop(content[0].scrollHeight);
     }
-
-    content.scrollTop(content[0].scrollHeight);
-    }
-
+    
     function addMessage(author, message, dt) {
-    var content = $('#chatbox');
-
-    var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
-            (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
-
-    if(author != myName){
-        content.append(`
-        <div class="row_customer">
-            <div class="chat-customer-message" style="margin-left:55px">
-                <b> ${author}</b>
-                <div style="white-space: pre-line;">${message}</div>
-                <div class="time">
-                    <i class="fa fa-clock-o" style="padding:3px"></i>
-                    ${time}
-                </div>
-            </div>
-        </div>`
-        );
-    } else {
-        content.append(`
-        <div class="row-staff">
-            <div class="chat-staff-message" style="margin-right:55px">
-                <b> ${author}</b>
-                <div style="white-space: pre-line;">${message}</div>
-                <div class="time">
-                    <i class="fa fa-clock-o" style="padding:3px"></i>
-                    ${time}
-                </div>
-            </div>
-        </div>`
-        );
-    }
-    content.scrollTop(content[0].scrollHeight);
+        var content = $('#chatbox');
+    
+        var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
+              (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+      
+                (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+        
+        if(author != myName){
+          content.append(`
+          <div class="row_customer">
+              <div class="chat-customer-message" style="margin-left:60px">
+                  <b> ${author}</b>
+                  <div style="white-space: pre-line;">${message}</div>
+                  <div class="time">
+                      <i class="fa fa-clock-o" style="padding:3px"></i>
+                      ${time}
+                  </div>
+              </div>
+          </div>`
+          );
+        } else {
+          content.append(`
+          <div class="row-staff">
+              <div class="chat-staff-message" style="margin-right:60px">
+                  <b> ${author}</b>
+                  <div style="white-space: pre-line;">${message}</div>
+                  <div class="time">
+                      <i class="fa fa-clock-o" style="padding:3px"></i>
+                      ${time}
+                  </div>
+              </div>
+          </div>`
+          );
+        }
+        content.scrollTop(content[0].scrollHeight);
     }
 
     function check_valid() {
