@@ -1,6 +1,4 @@
-process.title = "node-chat";
 var webSocketsServerPort = 1337;
-var fs = require("fs");
 
 // Connect to database
 var mysql = require("mysql");
@@ -13,6 +11,9 @@ var con = mysql.createConnection({
 con.connect();
 
 var script;
+
+// Chat timeout
+const Timeout = 600; // 10 minutes
 
 function updateScript() {
     con.query("SELECT scenario_id, content, type_id, url, image, next_jump, parent_id FROM scenario", function(err, result, fields) {
@@ -76,15 +77,6 @@ var staff = new Set();
 
 var WebSocketServer = require("websocket").server;
 var http = require("http");
-const {
-    chdir,
-    send
-} = require("process");
-
-const {
-    client
-} = require("websocket");
-const { Script } = require("vm");
 
 var server = http.createServer(function(request, response) {});
 
@@ -145,16 +137,16 @@ wsServer.on("request", function(request) {
         for (let i of script) {
             if (i['content'] == message) {
                 preId = i['scenario_id'];
-                
+
                 html = message + '<br><span id="form">';
                 for (let j of script) {
                     if (j['parent_id'] == i['scenario_id'] || j['scenario_id'] == i['next_jump']) {
-                        switch(j['type_id']) {
+                        switch (j['type_id']) {
                             case 1: //text
                                 html += `<li>${j['content']}</li>`;
                                 break;
                             case 2: // button
-                                if(j['url'] == "") html += `<button class="button">${j['content']}</button>`;
+                                if (j['url'] == "") html += `<button class="button">${j['content']}</button>`;
                                 else html += `<a class="button" href="${j['url']}" target="_blank">${j['content']}</a>`;
                                 break;
                             case 3: //staff
@@ -162,22 +154,22 @@ wsServer.on("request", function(request) {
                                 break;
                         }
 
-                        if(j['image']!="") {
+                        if (j['image'] != "") {
                             html += `<img src="${j['image']}" class="product_image">`
                         }
-                        
+
                         check = false;
                     }
                 }
                 html += '<input type="text" id="dif" placeholder="Khác"></span>';
-                if(check) html = "Yêu cầu của quý khách đã được ghi nhận";
+                if (check) html = "Yêu cầu của quý khách đã được ghi nhận";
                 return html;
             }
         }
         return "Yêu cầu của quý khách đã được ghi nhận" + '<br><span id="form"><button class="button">Gặp nhân viên tư vấn</button></span>';
     }
 
-    function addHistory(mess, auth){
+    function addHistory(mess, auth) {
         var obj = {
             time: (new Date()).getTime(),
             text: mess,
@@ -188,12 +180,12 @@ wsServer.on("request", function(request) {
         return obj;
     }
 
-    function end_chat_process(){
+    function end_chat_process() {
         var json = JSON.stringify(history[historyName]);
-        var s = (to != "Chatbot")?to:"";
+        var s = (to != "Chatbot") ? to : "";
         var sql = "INSERT INTO history (staff,customer,json) VALUES ?";
         var values = [
-            [s,JSON.stringify(customer),json]
+            [s, JSON.stringify(customer), json]
         ];
         con.query(sql, [values], function(err, result) {
             if (err) throw err;
@@ -212,7 +204,7 @@ wsServer.on("request", function(request) {
             }));
         }
 
-        if(admin) admin.send("new_chat");
+        if (admin) admin.send("new_chat");
     }
 
     var connection = request.accept(null, request.origin);
@@ -224,7 +216,6 @@ wsServer.on("request", function(request) {
     console.log((new Date()) + " Connection accepted.");
 
     connection.on("message", function(message) {
-        timeout = 300; // 5 minutes
         if (message.type === "utf8") {
             switch (message.utf8Data) {
                 case "admin":
@@ -239,7 +230,7 @@ wsServer.on("request", function(request) {
                     break;
                 case "update_SA":
                     console.log((new Date()) + " SA was updated");
-                    for (let s of staff){
+                    for (let s of staff) {
                         clients[s].send(JSON.stringify({
                             type: "update_SA",
                         }));
@@ -254,6 +245,7 @@ wsServer.on("request", function(request) {
                     }
                     break;
                 default:
+                    timeout = Timeout; // reset timeout when received message from customer
                     if (message.utf8Data.includes("from: ")) {
                         from = message.utf8Data.substring(7);
                         if (message.utf8Data[0] == "s") staff.add(from);
@@ -272,17 +264,17 @@ wsServer.on("request", function(request) {
                             }));
                             historyName = from + " - " + to;
                         } else historyName = to + " - " + from;
-                        
+
                         console.log((new Date()) + " " + from + " want to chat with " + to);
-        
-                        if(!history.hasOwnProperty(historyName)) {
-                                if(to == "Chatbot") history[historyName] = [];
-                                else {
-                                    history[historyName] = history["Chatbot - " + from];
-                                }
+
+                        if (!history.hasOwnProperty(historyName)) {
+                            if (to == "Chatbot") history[historyName] = [];
+                            else {
+                                history[historyName] = history["Chatbot - " + from];
+                            }
                         }
-                        
-                        if (history[historyName].length!=0) {
+
+                        if (history[historyName].length != 0) {
                             if (to == "Chatbot") {
                                 var json = JSON.stringify({
                                     type: "history",
@@ -291,18 +283,16 @@ wsServer.on("request", function(request) {
                                 connection.sendUTF(json);
                                 let html = reply(history[historyName].slice(-1)[0]['text']);
                                 botMessage(html);
-                                }
-                            else {
+                            } else {
                                 var json = JSON.stringify({
                                     type: "history",
                                     data: history[historyName]
                                 });
                                 connection.sendUTF(json);
                             }
-                        }
-                        else if (to == "Chatbot") {
-                            addHistory(script[0]['content'],to);
-        
+                        } else if (to == "Chatbot") {
+                            addHistory(script[0]['content'], to);
+
                             let html = reply(script[0]['content']);
                             var obj = {
                                 time: (new Date()).getTime(),
@@ -315,16 +305,16 @@ wsServer.on("request", function(request) {
                             });
                             clients[from].sendUTF(json);
                         }
-        
+
                     } else {
                         console.log((new Date()) + " Received Message from " + from + ": " + message.utf8Data);
                         var obj = addHistory(message.utf8Data, from);
-        
+
                         var json = JSON.stringify({
                             type: "message",
                             data: obj
                         });
-        
+
                         if (to != "Chatbot") clients[to].sendUTF(json);
                         else {
                             if (message.utf8Data == "Gặp nhân viên tư vấn") {
@@ -332,8 +322,8 @@ wsServer.on("request", function(request) {
                                     botMessage("Xin lỗi hiện tại không có nhân viên nào online!");
                                     let html = reply(script[0]['content']);
                                     botMessage(html);
-                                    addHistory("Xin lỗi hiện tại không có nhân viên nào online!","Chatbot");
-                                    addHistory(script[0]['content'],"Chatbot");
+                                    addHistory("Xin lỗi hiện tại không có nhân viên nào online!", "Chatbot");
+                                    addHistory(script[0]['content'], "Chatbot");
                                 } else {
                                     tmp = Array.from(staff);
                                     var s = tmp[Math.floor(Math.random() * tmp.length)];
@@ -356,25 +346,22 @@ wsServer.on("request", function(request) {
         }
     });
 
-    // setInterval(function() { // Chat timeout
-    //     if(customer){
-    //         timeout-=1;
-    //         switch(timeout){
-    //             case 0:
-    //                 end_chat_process();
-    //                 customer = false;
-    //                 break;
-    //             case 60:
-    //                 clients[from].sendUTF(JSON.stringify({
-    //                     type: "timeout",
-    //                 }));
-    //                 break;
-    //             default:
-    //                 console.log(from + " - countdown: " + timeout);
-    //                 break;
-    //         }
-    //     }
-    // }, 1000);
+    setInterval(function() { // Chat timeout
+        if(customer){
+            timeout-=1;
+            switch(timeout){
+                case 0:
+                    end_chat_process();
+                    customer = false;
+                    break;
+                case 60:
+                    clients[from].sendUTF(JSON.stringify({
+                        type: "timeout",
+                    }));
+                    break;
+            }
+        }
+    }, 1000);
 
     connection.on("close", function(connection) {
         if (from !== false && to != -1) {

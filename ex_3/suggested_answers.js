@@ -2,9 +2,9 @@ var index;
 var SA;
 var connection;
 
-function drawTable(){
+function drawTable() {
     $("#tableSA tbody").empty();
-    for(const [index, value] of SA.entries()){
+    for (const [index, value] of SA.entries()) {
         let table_row = `
         <tr>
             <td>${value['keyword']}</td>
@@ -32,11 +32,11 @@ function drawTable(){
     }
 }
 
-function getSA(){
+function getSA() {
     $.ajax({
         url: "getSA.php",
         type: "get",
-        success:function(data){
+        success: function(data) {
             SA = JSON.parse(data);
             drawTable();
         }
@@ -74,23 +74,23 @@ function normalize(str) {
 }
 
 function findSA(msg) {
-    var check= true;
+    var check = true;
     $("#tableSA tbody > *").hide();
     msg = normalize(msg);
     console.log(msg);
-    for(const [index, value] of SA.entries()){
-        if(msg.includes(value['keyword'])) {
+    for (const [index, value] of SA.entries()) {
+        if (msg.includes(value['keyword'])) {
             $("#SA ul").append(`<li>${value['answer']}</li>`);
             $('table tbody tr').eq(index).show();
             check = false;
         }
     }
-    if(check) $("#SA ul").append(`<li>Không tìm thấy gợi ý trả lời</li>`);
+    if (check) $("#SA ul").append(`<li>Không tìm thấy gợi ý trả lời</li>`);
 }
 
-$(document).on("ready",function(){ 
+$(document).on("ready", function() {
     function connect() {
-        connection = new WebSocket("ws://172.16.90.133:1337");
+        connection = new WebSocket("ws://localhost:1337");
 
         connection.onclose = function() {
             setTimeout(function() {
@@ -99,7 +99,7 @@ $(document).on("ready",function(){
         };
     }
 
-    $(document).on('click', '.remove', function () {
+    $(document).on('click', '.remove', function() {
         let index = parseInt($(this).attr("id"));
         if (confirm(`Bạn có chắc chắn muốn xóa gợi ý trả lời này`) == true) {
             $.ajax({
@@ -109,44 +109,44 @@ $(document).on("ready",function(){
                 data: {
                     id: SA[index]['id'],
                 },
-                success:function(data) {
-                    if(data=="success") $.notify("Xóa thành công","success");
+                success: function(data) {
+                    if (data == "success") $.notify("Xóa thành công", "success");
                     else $.notify("Xóa thất bại");
                     getSA();
                     connection.send("update_SA");
                 }
             });
-        } 
+        }
     });
 
-    $(document).on('click', '.edit', function () {
+    $(document).on('click', '.edit', function() {
         index = parseInt($(this).attr("id"));
         $("#edit_keyword").val(SA[index]['keyword']);
         $("#edit_answer").val(SA[index]['answer']);
         $.fancybox.open({
-            src  : '#editSA',
-            type : 'inline',
-            opts : {
+            src: '#editSA',
+            type: 'inline',
+            opts: {
                 'buttons': false,
                 'smallBtn': false
             }
         });
     });
 
-    $(".btn-cancel").on("click",function(){
+    $(".btn-cancel").on("click", function() {
         $.fancybox.close();
     });
-    
-    $("#addSA .btn-save").on("click",function(){
+
+    $("#addSA .btn-save").on("click", function() {
         let add_keyword = $('#add_keyword').val();
         let add_answer = $('#add_answer').val();
-    
-        if(add_keyword=="") {
+
+        if (add_keyword == "") {
             $('#add_keyword').notify("Từ khóa không thể để trống");
             return;
         }
 
-        if(add_answer=="") {
+        if (add_answer == "") {
             $('#add_answer').notify("Câu trả lời không thể để trống");
             return;
         }
@@ -157,12 +157,12 @@ $(document).on("ready",function(){
             url: "insertSA.php",
             type: "post",
             data: {
-            keyword: add_keyword,
-            answer: add_answer
+                keyword: add_keyword,
+                answer: add_answer
             },
-            success:function(data){
+            success: function(data) {
                 console.log(data);
-                if(data=="success") $.notify("Thêm thành công","success");
+                if (data == "success") $.notify("Thêm thành công", "success");
                 else $.notify("Thêm thất bại");
                 getSA();
                 connection.send("update_SA");
@@ -173,16 +173,16 @@ $(document).on("ready",function(){
         $('#add_answer').val("");
     });
 
-    $("#editSA .btn-save").on("click",function(){
+    $("#editSA .btn-save").on("click", function() {
         let edit_keyword = $('#edit_keyword').val();
         let edit_answer = $('#edit_answer').val();
-    
-        if(edit_keyword=="") {
+
+        if (edit_keyword == "") {
             $('#edit_keyword').notify("Từ khóa không thể để trống");
             return;
         }
 
-        if(edit_answer=="") {
+        if (edit_answer == "") {
             $('#edit_answer').notify("Câu trả lời không thể để trống");
             return;
         }
@@ -193,12 +193,12 @@ $(document).on("ready",function(){
             url: "updateSA.php",
             type: "post",
             data: {
-            id: SA[index]['id'],
-            keyword: edit_keyword,
-            answer: edit_answer
+                id: SA[index]['id'],
+                keyword: edit_keyword,
+                answer: edit_answer
             },
-            success:function(data){
-                if(data=="success") $.notify("Chỉnh sửa thành công","success");
+            success: function(data) {
+                if (data == "success") $.notify("Chỉnh sửa thành công", "success");
                 else $.notify("Chỉnh sửa thất bại");
                 getSA();
                 connection.send("update_SA");
@@ -206,32 +206,36 @@ $(document).on("ready",function(){
         });
     });
 
-    $("#addSA_button").on("click",function(){
-        $("#edit_keyword").val("");
-        $("#edit_answer").val("");
+    $("#addSA_button").on("click", function() {
+        $("#add_keyword").val("");
+        $("#add_answer").val("");
         $.fancybox.open({
-            src  : '#addSA',
-            type : 'inline',
-            opts : {
+            src: '#addSA',
+            type: 'inline',
+            opts: {
                 'buttons': false,
                 'smallBtn': false
             }
         });
     });
 
-    $("#search").on('input',function(){
+    $("#search").on('input', function() {
+        var cnt = 0;
         s = $('#search').val();
         $("table tbody > *").hide();
-        for(const [index, value] of SA.entries()){
+        for (const [index, value] of SA.entries()) {
             s = normalize(s);
-            if(value['keyword'].includes(s)) {
+            if (value['keyword'].includes(s)) {
                 $('table tbody tr').eq(index).show();
+                if (cnt % 2 == 0) $('table tbody tr').eq(index).addClass("even").removeClass("odd");
+                else $('table tbody tr').eq(index).addClass("odd").removeClass("even");
+                cnt += 1;
             }
         }
     });
 
-    $("#testSA_button").on("click",function(){
-        if($("#testSA").css("display") != "none") {
+    $("#testSA_button").on("click", function() {
+        if ($("#testSA").css("display") != "none") {
             $("#tableSA tbody > *").show();
         }
         $("#test").val("");
@@ -240,13 +244,13 @@ $(document).on("ready",function(){
         $("#SA").hide();
     });
 
-    $("#send_button").on("click",function(){
+    $("#send_button").on("click", function() {
         $("#SA ul").empty();
         $("#SA").show();
         var msg = $("#test").val();
         findSA(msg);
     });
-    
+
     getSA();
     connect();
 });

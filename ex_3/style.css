@@ -46,7 +46,7 @@ body {
   height: 100%;
   overflow-y: hidden;
   background-color: #262626;
-  font-family: "Open Sans";
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 15px;
   color: white;
   display: flex;
@@ -56,7 +56,7 @@ body {
   display: none;
   position: absolute;
   background-color: #495057;
-  width: 140px;
+  width: 165px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
@@ -78,14 +78,9 @@ body {
 
 #select_box {
   background-color: #36404a;
-
   width: 220px;
   margin-right: 10px;
-  padding: 0px 10px;
-}
-
-#task_bar {
-  padding: 5px;
+  padding: 5px 10px;
 }
 
 .column {
@@ -95,11 +90,11 @@ body {
 
 form {
   margin-top: 5px;
-  /* padding: 5px; */
 }
 
 form input {
-  padding: 5px 10px;background-color: #262626;
+  padding: 5px 10px;
+  background-color: #262626;
   border-style: groove;
   border-color: white;
   border-width: 0.5px;
@@ -115,8 +110,16 @@ select {
   border-color: white;
   margin-bottom: 5px;
   color: white;
-  padding: 5px 5px;width: 100%;
-border-radius: 0.25em;}
+  padding: 5px 5px;
+  width: 100%;
+  border-radius: 0.25em;
+}
+
+.selected {
+  background-color: rgb(232, 240, 254);
+  color: black;
+  border-color: #262626;
+}
 
 input::-webkit-input-placeholder {
   color: white;
@@ -128,6 +131,34 @@ input:-moz-placeholder {
 
 input:focus::placeholder {
   color: transparent;
+}
+
+textarea::-webkit-input-placeholder {
+  color: #fff;
+}
+
+textarea::-moz-placeholder {
+  color: #fff;
+}
+
+textarea:-ms-input-placeholder {
+  color: #fff;
+}
+
+textarea:focus::placeholder {
+  color: transparent;
+}
+
+input:not(:placeholder-shown) {
+  background-color: rgb(232, 240, 254) !important;
+  color: black !important;
+  border-color: #262626;
+}
+
+textarea:not(:placeholder-shown) {
+  background-color: rgb(232, 240, 254) !important;
+  color: black !important;
+  border-color: #262626;
 }
 
 button {
@@ -173,13 +204,22 @@ td {
 tr {
   background-color: #262626;
 }
+
 tr:nth-child(even) {
-  background-color: #495057;
+  background-color: #36404a;
 }
 
 th {
   background-color: #665dfe;
   color: white;
+}
+
+.even {
+  background-color: #262626 !important;
+}
+
+.odd {
+  background-color: #36404a !important;
 }
 
 .edit {
@@ -255,8 +295,7 @@ th {
   padding: 0.375rem 0.75rem;
   font-size: 1rem;
   border-radius: 0.25rem;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-  border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .btn-save {
@@ -283,13 +322,13 @@ textarea {
   color: white;
   margin-bottom: 10px;
   padding: 5px;
-  }
+}
 
 #searchSA {
-  width: 330px;
+  width: 340px;
   margin-right: 10px;
   background-color: #36404a;
-  padding: 5px;
+  padding: 5px 10px;
   overflow-y: auto;
 }
 
@@ -358,8 +397,7 @@ tr .remove:hover {
   font-size: 1rem;
   line-height: 1.5;
   border-radius: 0.25rem;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   background-color: #665dfe;
   color: #fff;
   width: 100%;
@@ -374,15 +412,36 @@ ul {
   list-style-position: inside;
 }
 
-#insert_form{
+#insert_form {
   background-color: #36404a;
-  width: 300px;
+  width: 320px;
 }
 
 #dropdown {
   padding: 5px;
 }
 
-.guide{
+.guide {
   cursor: pointer;
+}
+
+#content {
+  padding: 5px 10px;
+  background-color: #262626;
+  border-style: groove;
+  border-color: white;
+  border-width: 0.5px;
+  margin-bottom: 5px;
+  color: white;
+  width: 100%;
+  border-radius: 0.25em;
+  height: 80px;
+}
+
+.icon {
+  margin-right: 5px;
+}
+
+.error_input {
+  background-color: #fedede;
 }

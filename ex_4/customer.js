@@ -55,13 +55,15 @@ $(function() {
     function generateDarkColorHex() {
         let color = "#";
         for (let i = 0; i < 3; i++)
-          color += ("0" + Math.floor(Math.random() * Math.pow(16, 2) / 2).toString(16)).slice(-2);
+            color += ("0" + Math.floor(Math.random() * Math.pow(16, 2) / 2).toString(16)).slice(-2);
         return color;
     }
 
-    $.notify.defaults({globalPosition: 'top left'});
+    $.notify.defaults({
+        globalPosition: 'top left'
+    });
 
-    function init(){
+    function init() {
         myName = getCookie("name");
         if (myName == null) {
             $("#input_info").show();
@@ -69,19 +71,21 @@ $(function() {
             $("#myname").empty();
         } else connect();
     }
-    
+
     $.getJSON("language.json", function(json) {
         dict = json;
     });
     // open connection
-    
+
     function connect() {
-        connection = new WebSocket("wss://26ad-115-78-131-187.ap.ngrok.io");
+        connection = new WebSocket("ws://localhost:1337");
+        // connection = new WebSocket("wss://e78f-14-187-113-141.ap.ngrok.io");
+
         connection.onopen = function() {
             //first we want users to enter their names
             myName = getCookie("name");
             to = getCookie("to");
-            color = getCookie("color");          
+            color = getCookie("color");
             let json = JSON.stringify({
                 name: myName,
                 email: getCookie("email"),
@@ -92,7 +96,7 @@ $(function() {
             });
             connection.send("cfrom: " + json);
             connection.send("cto: " + to);
-            $("#end_chat").css('display','flex');
+            $("#end_chat").css('display', 'flex');
             $("#input_info").hide();
             $("#chat").show();
             $("#myname").text(" " + myName);
@@ -102,7 +106,7 @@ $(function() {
             $("#staff_avatar").html(staff_avatar);
             customer_avatar = generateAvatar(myName);
 
-            if(to=='Chatbot') {
+            if (to == 'Chatbot') {
                 input.hide();
                 $("#staff_avatar").hide();
                 $("#bot-avatar").show();
@@ -128,31 +132,30 @@ $(function() {
                 case "history":
                     content.empty();
                     for (var i = 0; i < json.data.length; i++)
-                        if(i == 0 || current_author!=json.data[i].author) {
+                        if (i == 0 || current_author != json.data[i].author) {
                             addMessageAvatar(json.data[i].author, json.data[i].text, new Date(json.data[i].time));
                             current_author = json.data[i].author;
                         }
-                        else
-                            addMessage(json.data[i].author, json.data[i].text, new Date(json.data[i].time));
+                    else
+                        addMessage(json.data[i].author, json.data[i].text, new Date(json.data[i].time));
                     break;
                 case "message":
                     input.removeAttr("disabled").trigger("focus");
-                    
-                    if (json.data.author == to){
-                        if(current_author!=json.data.author) {
+
+                    if (json.data.author == to) {
+                        if (current_author != json.data.author) {
                             addMessageAvatar(json.data.author, json.data.text, new Date(json.data.time));
                             current_author = json.data.author;
-                        }
-                        else addMessage(json.data.author, json.data.text, new Date(json.data.time));
+                        } else addMessage(json.data.author, json.data.text, new Date(json.data.time));
                     }
 
-                    if ($("#contentbox").css("display")=="none" || json.data.author != to || $("#body").css("display")=="none"){
-                        $.notify("Nhận được tin nhắn mới từ " + json.data.author,"info");
+                    if ($("#contentbox").css("display") == "none" || json.data.author != to || $("#body").css("display") == "none") {
+                        $.notify("Nhận được tin nhắn mới từ " + json.data.author, "info");
                     }
 
-                    if($("#body").css("display")=="none"){
+                    if ($("#body").css("display") == "none") {
                         new_message += 1;
-                        if (new_message>99) $("#new_message").text("99+");
+                        if (new_message > 99) $("#new_message").text("99+");
                         else $("#new_message").text(new_message);
                         $("#new_message").show();
                     }
@@ -166,8 +169,8 @@ $(function() {
                     break;
                 case "typing":
                     if (json.data == to) {
-                        $("#typing").show()
-                        typing_time = 2;
+                        $("#typing").show();
+                        typing_time = 2; // reset typing timeout
                     }
                     break;
                 case "get_staff":
@@ -175,18 +178,18 @@ $(function() {
                     setCookie("to", to);
                     connection.send("cto: " + to);
                     $("#staff_info").text(to);
-                    
+
                     staff_avatar = generateAvatar(to);
                     $("#staff_avatar").html(staff_avatar);
 
                     $("#staff_avatar").show();
                     $("#bot-avatar").hide();
 
-                    setCookie("color",color);
+                    setCookie("color", color);
                     input.show();
                     break;
                 case "timeout":
-                    $.notify("Nếu quý khách không còn gì để trao đổi thì cuộc chat sẽ kết thúc sau 1 phút nữa");
+                    $.notify("Nếu quý khách không còn gì để trao đổi thì cuộc chat sẽ kết thúc sau 1 phút nữa","warn");
                     break;
                 default:
                     console.log("Hmm..., I\"ve never seen JSON like this:", json);
@@ -217,7 +220,7 @@ $(function() {
     }
 
     //Send message when user presses Enter key
-    input.on("keydown",function(e) {
+    input.on("keydown", function(e) {
         if (e.key === "Enter" && !e.shiftKey) {
             var msg = input.val();
             input.val("").on("focus");
@@ -229,18 +232,25 @@ $(function() {
                 text: msg,
                 author: myName,
             };
-            if(current_author!=obj.author) {
+            if (current_author != obj.author) {
                 addMessageAvatar(obj.author, obj.text, new Date(obj.time));
                 current_author = obj.author;
-            }
-            else
+            } else
                 addMessage(obj.author, obj.text, new Date(obj.time));
             connection.send(msg);
             return false;
         }
     });
 
-    $('#chatbox').on("keydown","input",function(e) {
+    input.on("input", function() {
+        if (myName != false && to != -1) {
+            connection.send("typing");
+        }
+        var msg = input.val();
+        if (msg.length == 255) $.notify("Tin nhắn có độ dài tối đa 255 kí tự");
+    });
+
+    $('#chatbox').on("keydown", "input", function(e) {
         if (e.key === "Enter") {
             var msg = $(this).val();
             if (!msg) {
@@ -261,16 +271,16 @@ $(function() {
     //Add message to the chat window
     function addMessageAvatar(author, message, dt) {
         var avatar;
-        if(author == "Chatbot") avatar = `<img src="https://livechat.pavietnam.vn/images/conong.png" class="avatar">`;
+        if (author == "Chatbot") avatar = `<img src="https://livechat.pavietnam.vn/images/conong.png" class="avatar">`;
         else avatar = staff_avatar;
         var content = $('#chatbox');
-    
+
         var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
-              (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
-      
-                (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
-        
-        if(author != myName){
+            (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+
+        (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+
+        if (author != myName) {
             content.append(`
             <div class="row_customer">
                 ${avatar}
@@ -282,10 +292,9 @@ $(function() {
                         ${time}
                     </div>
                 </div>
-            </div>`
-            );
+            </div>`);
         } else {
-          content.append(`
+            content.append(`
           <div class="row-staff">
               <div class="chat-staff-message right" style="margin-top:20px;">
                   <b> ${author}</b>
@@ -296,22 +305,21 @@ $(function() {
                   </div>
               </div>
               ${customer_avatar}
-          </div>`
-          );
+          </div>`);
         }
         content.scrollTop(content[0].scrollHeight);
     }
-    
+
     function addMessage(author, message, dt) {
         var content = $('#chatbox');
-    
+
         var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
-              (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
-      
-                (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
-        
-        if(author != myName){
-          content.append(`
+            (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+
+        (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+
+        if (author != myName) {
+            content.append(`
           <div class="row_customer">
               <div class="chat-customer-message" style="margin-left:60px">
                   <b> ${author}</b>
@@ -321,10 +329,9 @@ $(function() {
                       ${time}
                   </div>
               </div>
-          </div>`
-          );
+          </div>`);
         } else {
-          content.append(`
+            content.append(`
           <div class="row-staff">
               <div class="chat-staff-message" style="margin-right:60px">
                   <b> ${author}</b>
@@ -334,55 +341,46 @@ $(function() {
                       ${time}
                   </div>
               </div>
-          </div>`
-          );
+          </div>`);
         }
         content.scrollTop(content[0].scrollHeight);
     }
 
     function check_valid() {
-        var check = false;
-        var name = $("#fullname").val();
-        var email = $("#email").val();
-        var to = $("#to").val();
+        var name = $("#fullname").val().trim();
+        var email = $("#email").val().trim();
         if (/\d/.test(name)) {
             $("#fullname").addClass("error-input");
-            $.notify("Họ và tên không được chứa số", "error");
+            $("#fullname").notify("Họ và tên không được chứa số", "error");
             return true;
         }
-        
+
         if (name.length == 0) {
             $("#fullname").addClass("error-input");
-            $.notify("Họ và tên không được để trống", "error");
+            $("#fullname").notify("Họ và tên không được để trống", "error");
             return true;
         }
 
         if (name.length > 50) {
             $("#fullname").addClass("error-input");
-            $.notify("Họ và tên quá dài", "error");
+            $("#fullname").notify("Họ và tên quá dài", "error");
             return true;
         }
 
-        if(!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
+        if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
             $("#email").addClass("error-input");
-            alert("Email không hợp lệ");
+            $("#email").notify("Email không hợp lệ");
             return true;
         }
 
         return false;
     }
 
-    $("#end_chat").on("click",function() {
+    $("#end_chat").on("click", function() {
         if (confirm("Bạn có chắc chắn muốn kết thúc cuộc trò chuyện") == true) {
             connection.send("end_chat");
-        } 
-    });
-
-    $("#message").on("input", function(e) {
-        if (myName != false && to != -1) {
-            connection.send("typing");
         }
-    })
+    });
 
     $("input, textarea").each(function() {
         $(this).focusin(function() {
@@ -394,23 +392,23 @@ $(function() {
         });
     });
 
-    $("#open_chat_box").on("click",function() {
+    $("#open_chat_box").on("click", function() {
         $("#contentbox").slideToggle("fast");
         $("#up_down").toggleClass("fa-arrow-down");
         content.scrollTop(content[0].scrollHeight);
     });
 
-    $("#up_down").on("click",function() {
+    $("#up_down").on("click", function() {
         $("#contentbox").slideToggle("fast");
         $("#up_down").toggleClass("fa-arrow-down");
         content.scrollTop(content[0].scrollHeight);
     });
 
-    $("#volume").on("click",function() {
+    $("#volume").on("click", function() {
         $("#volume").attr("src", $("#volume").attr("src") == "https://p7.hiclipart.com/preview/554/784/884/computer-icons-sound-icon-volume.jpg" ? "https://www.kindpng.com/picc/m/287-2877466_mute-icon-png-transparent-png.png" : "https://p7.hiclipart.com/preview/554/784/884/computer-icons-sound-icon-volume.jpg");
     });
 
-    $("#change_language").on("change",function() {
+    $("#change_language").on("change", function() {
         lang = $("#change_language").val();
         $(".lang").each(function() {
             var id = $(this).attr("id");
@@ -422,7 +420,7 @@ $(function() {
         $("#change_language option:first").prepend("&#xf0ac; ");
     });
 
-    $("#start_chat").on("click",function() {
+    $("#start_chat").on("click", function() {
         if (check_valid()) return;
         setCookie("name", $("#fullname").val());
         to = "Chatbot";
@@ -460,15 +458,15 @@ $(function() {
     $('#chatbox').on('click', 'span img', function() {
         var src = $(this).attr('src');
         $.fancybox.open({
-            src  : src
+            src: src
         });
     });
 
-    $("#chatbox").on('focusout','input',function(event){
+    $("#chatbox").on('focusout', 'input', function(event) {
         $(this).removeClass('change-input');
     });
 
-    $("#chatbox").on('focusin','input',function(event){
+    $("#chatbox").on('focusin', 'input', function(event) {
         $(this).addClass('change-input');
     });
 
@@ -477,14 +475,14 @@ $(function() {
         else typing_time = typing_time - 1;
     }, 250);
 
-    $("#icon_chat_container").on("click",function(){
+    $("#icon_chat_container").on("click", function() {
         new_message = 0;
         $("#icon_chat_container").hide();
         $("#new_message").hide();
         $("#body").show();
     });
 
-    $("#close").on("click",function(){
+    $("#close").on("click", function() {
         $("#to").val("Chọn khách hàng");
         $("#contentbox").hide();
         $("#up_down").removeClass("fa-arrow-down");

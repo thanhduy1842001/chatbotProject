@@ -11,58 +11,58 @@
     <body>
         <div id="select_box">
             <div id = "task_bar">
-                <i class="fa fa-bars icon" id = "dropdown">
+                <i class="fa fa-bars" id = "dropdown">
                     <div class="dropdown-content">
                       <a href="http://localhost/chatbotProject/ex_5/">
                         <i class="fa fa-comments icon"></i>
                         Lịch sử chat
                       </a>
                       <a class="on-select">
-                        <i class="fa fa-film"></i>
-                        Kịch bản chat
+                        <i class="fa fa-film" style="margin-right:4px;"></i>
+                        Kịch bản Chatbot
                       </a>
                       <a href="http://localhost/chatbotProject/ex_3/suggested_answers.html">
-                        <i class="fa fa-lightbulb-o icon"></i>
+                        <i class="fa fa-lightbulb-o" style="margin-right:10px;"></i>
                         Gợi ý trả lời
                       </a>
                     </div>
                 </i>
-                <i class="fa fa-question-circle guide" aria-hidden="true" title="Hướng dẫn"></i>
-                <b>Thông tin kịch bản:</b>
+                <i class="fa fa-question-circle guide icon" aria-hidden="true" title="Hướng dẫn"></i>
+                <b>Kịch bản Chatbot:</b>
             </div>
             <div id= "form_container">
                 Thông tin nhánh:
                 <form method="post" id="insert_form" enctype="multipart/form-data" style="display:none;">
-                    <input type="text" id='title' name="title" placeholder="Nhập tên nhánh" required>
-                    <input type="text" id='content' name="content" placeholder="Nhập nội dung trả lời" required>
-                    <select name="type_id" id="type_id" required>
+                    <input type="text" id='title' name="title" placeholder="Nhập tên nhánh">
+                    <textarea id='content' name="content" placeholder="Nhập nội dung trả lời"></textarea>
+                    <select name="type_id" id="type_id">
                         <option selected disabled value="">Chọn sự kiện</option>
-                        <option value=1>Button</option>
-                        <option value=2>Text</option>
+                        <option value=1>Text</option>
+                        <option value=2>Button</option>
                         <option value=3>Staff</option>
                     </select>
                     <input type="text" id='url' name="url" placeholder="Nhập liên kết web">
                     <input type="text" id='image' name="image" placeholder="Nhập liên kết hình ảnh">
-                    <select id='action' name="action" required>
+                    <select id='action' name="action">
                         <option selected disabled value="">Chọn hành động</option>
                         <option value="jump">Nhảy</option>
                         <option value="0">Không có</option>
                     </select>
-                    <select name="next_jump" id="next_jump" class="id" style="display:none;" required>
+                    <select name="next_jump" id="next_jump" class="id" style="display:none;">
                         <option selected value=0 disabled>Nhánh kế tiếp</option>
                     </select>
-                    <button type="submit" name="submit" class="submit" id="submit2" value="Lưu">
+                    <button type="button" name="submit" class="submit" id="submit" value="Lưu">
                         <i class="fa fa-save"></i>
                         Lưu
                     </button>
                 </form>
                 <form method="post" id="update_form" enctype="multipart/form-data">
                     <input name="title" id="title" placeholder="Tên nhánh" title="Tên nhánh">
-                    <input type="text" id='content' name="content" placeholder="Nội dung trả lời" title="Nội dung trả lời">
-                    <select name="type_id" id="type_id" title="Loại hiển thị">
-                        <option value=0>Loại hiển thị</option>
-                        <option value=1>Button</option>
-                        <option value=2>Text</option>
+                    <textarea id='content' name="content" placeholder="Nội dung trả lời" title="Nội dung trả lời" required></textarea>
+                    <select name="type_id" id="type_id" title="Loại hiển thị" required>
+                        <option selected disabled value="">Loại hiển thị</option>
+                        <option value=1>Text</option>
+                        <option value=2>Button</option>
                         <option value=3>Staff</option>
                     </select>
                     <input type="text" id='url' name="url" placeholder="Liên kết web" title="Liên kết web">

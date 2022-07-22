@@ -14,19 +14,13 @@
     }
 
     function map($s){
-        if($_POST[$s] == "") return "";
         if(is_string($_POST[$s])) return $s . "= '" . $_POST[$s] . "'";
         return $s . "=" . $_POST[$s];
-    }
-
-    function not_blank($s){
-        return !($s == "");
     }
 
     function set(){
         $attr = ['title', 'content', 'type_id', 'url', 'image', 'action', 'next_jump'];
         $res = array_map('map', $attr);
-        $res = array_filter($res, "not_blank");
         $res = implode(',', $res);
         return $res;
     }

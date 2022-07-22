@@ -1,7 +1,7 @@
 var connection;
 
-function connect(){
-    connection = new WebSocket("wss://99ef-14-187-113-141.ap.ngrok.io");
+function connect() {
+    connection = new WebSocket("ws://localhost:1337");
 
     connection.onopen = function() {
         connection.send("admin");
@@ -30,6 +30,11 @@ var acronym;
 var randomColor;
 var staff_avatar;
 var customer_avatar;
+let customer_email;
+let customer_tel;
+let customer_address;
+let customer_company;
+let customer_note;
 
 $("#chatbox").hide();
 connect();
@@ -41,7 +46,7 @@ function normalize(str) {
 function generateDarkColorHex() {
     let color = "#";
     for (let i = 0; i < 3; i++)
-      color += ("0" + Math.floor(Math.random() * Math.pow(16, 2) / 2).toString(16)).slice(-2);
+        color += ("0" + Math.floor(Math.random() * Math.pow(16, 2) / 2).toString(16)).slice(-2);
     return color;
 }
 
@@ -71,20 +76,20 @@ function removeVietnameseTones(str) {
     return str;
 }
 
-function generateAvatar(name,id,color){
+function generateAvatar(name, id, color) {
     matches = removeVietnameseTones(name).match(/\b(\w)/g).slice(-2);
     acronym = matches.join('').toUpperCase();
     $(id).text(acronym);
-    $(id).css('background-color',color);
+    $(id).css('background-color', color);
 }
 
-function addMessageAvatar(author, message, dt, i , pos) {
+function addMessageAvatar(author, message, dt, i, pos) {
     var content = $('#chatbox');
 
     var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
-            (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
-    
-    if(author == customer){
+        (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+
+    if (author == customer) {
         content.append(`
         <div class="row_customer">
             <div class="avatar customer-avatar"></div>
@@ -96,11 +101,10 @@ function addMessageAvatar(author, message, dt, i , pos) {
                     ${time}
                 </div>
             </div>
-        </div>`
-        );
+        </div>`);
     } else {
         let avatar;
-        if(author == staff) avatar = `<div class="avatar staff-avatar"></div>`;
+        if (author == staff) avatar = `<div class="avatar staff-avatar"></div>`;
         else avatar = `<img src="https://livechat.pavietnam.vn/images/conong.png" class="avatar" id="bot-avatar">`;
         content.append(`
         <div class="row-staff">
@@ -113,20 +117,19 @@ function addMessageAvatar(author, message, dt, i , pos) {
                 </div>
             </div>
             ${avatar}
-        </div>`
-        );
+        </div>`);
     }
 
     // if(i==pos || pos==-1) content.scrollTop(content[0].scrollHeight);
 }
 
-function addMessage(author, message, dt, i , pos) {
+function addMessage(author, message, dt, i, pos) {
     var content = $('#chatbox');
 
     var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
-            (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
-    
-    if(author == customer){
+        (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
+
+    if (author == customer) {
         content.append(`
         <div class="row_customer" style="margin-left:42px">
             <div class="chat-customer-message">
@@ -137,8 +140,7 @@ function addMessage(author, message, dt, i , pos) {
                     ${time}
                 </div>
             </div>
-        </div>`
-        );
+        </div>`);
     } else {
         content.append(`
         <div class="row-staff" style="margin-right:42px">
@@ -150,81 +152,75 @@ function addMessage(author, message, dt, i , pos) {
                     ${time}
                 </div>
             </div>
-        </div>`
-        );
+        </div>`);
     }
 
     // if(i==pos || pos==-1) content.scrollTop(content[0].scrollHeight);
 }
 
-function display(){
+function display() {
     var pos = urlParams.has('pos') ? parseInt(urlParams.get('pos')) : -1;
     customer = history[id]['customer']['name'];
     staff = history[id]['staff'];
 
     $('#chatbox').empty();
-    for(let [i, message] of history[id]['json'].entries()){
-        if(i==0 || message.author!=history[id]['json'][i-1].author)
-        addMessageAvatar(message.author,message.text,new Date(message.time),i,pos);
+    for (let [i, message] of history[id]['json'].entries()) {
+        if (i == 0 || message.author != history[id]['json'][i - 1].author)
+            addMessageAvatar(message.author, message.text, new Date(message.time), i, pos);
         else
-        addMessage(message.author,message.text,new Date(message.time),i,pos);
+            addMessage(message.author, message.text, new Date(message.time), i, pos);
     }
     $('#chatbox').append("<div style='margin-bottom:5px'><div>");
     $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
 
-    let customer_email = history[id]['customer']['email'];
-    let customer_tel = history[id]['customer']['tel'];
-    let customer_address = history[id]['customer']['address'];
-    let customer_company = history[id]['customer']['company'];
-    let customer_note = history[id]['customer']['note'];
+    customer_email = history[id]['customer']['email'];
+    customer_tel = history[id]['customer']['tel'];
+    customer_address = history[id]['customer']['address'];
+    customer_company = history[id]['customer']['company'];
+    customer_note = history[id]['customer']['note'];
 
-    if(staff!="") {
+    if (staff != "") {
         $("#staff-name").text(staff);
-        generateAvatar(staff,".staff-avatar",generateDarkColorHex());
-    }else{
+        generateAvatar(staff, ".staff-avatar", generateDarkColorHex());
+    } else {
         $("#staff-name").text("Chatbot");
         $(".staff-avatar").html(`<img src="https://livechat.pavietnam.vn/images/conong.png" class="avatar" id="bot-avatar">`);
     }
 
     $("#customer-name").text(customer);
-    generateAvatar(customer,".customer-avatar", $("#"+id+" .avatar").css('background-color'));
+    generateAvatar(customer, ".customer-avatar", $("#" + id + " .avatar").css('background-color'));
 
-    if(customer_email!="") $("#customer-email").text(customer_email);
+    if (customer_email != "") $("#customer-email").text(customer_email);
     else $("#customer-email").text("Chưa có dữ liệu");
-    $("#customer_email").val(customer_email);
 
-    if(customer_tel!="") $("#customer-tel").text(customer_tel);
+    if (customer_tel != "") $("#customer-tel").text(customer_tel);
     else $("#customer-tel").text("Chưa có dữ liệu");
-    $("#customer_tel").val(customer_tel);
 
-    if(customer_address!="") $("#customer-address").text(customer_address);
+    if (customer_address != "") $("#customer-address").text(customer_address);
     else $("#customer-address").text("Chưa có dữ liệu");
-    $("#customer_address").val(customer_address);
 
-    if(customer_company!="") $("#customer-company").text(customer_company);
+    if (customer_company != "") $("#customer-company").text(customer_company);
     else $("#customer-company").text("Chưa có dữ liệu");
-    $("#customer_company").val(customer_company);
 
-    if(customer_note!="") $("#customer-note").text(customer_note);
+    if (customer_note != "") $("#customer-note").text(customer_note);
     else $("#customer-note").text("Chưa có dữ liệu");
-    $("#customer_note").val(customer_note);
 }
 
 function getHistory() {
     $.ajax({
         url: "getChat.php",
         type: "get",
-        success:function(data){
+        success: function(data) {
             $('#select').empty();
             var obj = JSON.parse(data);
-            for(let i of obj){
+            for (let i of obj) {
                 randomColor = generateDarkColorHex();
                 history[i['id']] = i;
                 history[i['id']]['json'] = JSON.parse(i['json']);
                 history[i['id']]['customer'] = JSON.parse(i['customer']);
                 matches = removeVietnameseTones(history[i['id']]['customer']['name']).match(/\b(\w)/g).slice(-2);
                 acronym = matches.join('').toUpperCase();
-                date = i['date'].slice(0,-3);
+                date = i['date'].slice(0, -3);
                 var html = `
                     <div class="row-select" id="${i['id']}">
                         <div class="avatar" style="background-color:${randomColor};">${acronym}</div>
@@ -240,7 +236,7 @@ function getHistory() {
                 $('#select').append(html);
             }
 
-            if(urlParams.has('id')){
+            if (urlParams.has('id')) {
                 const id = urlParams.get('id');
                 $("#" + id).trigger('click');
             }
@@ -248,12 +244,30 @@ function getHistory() {
     });
 }
 
-$("#select").on('click','.row-select',function(){
+function checkValid() {
+    customer_email = $('#customer_email').val();
+    customer_tel = $('#customer_tel').val();
+    customer_address = $('#customer_address').val();
+    customer_company = $('#customer_company').val();
+    customer_note = $('#customer_note').val();
 
-    $(".row-select").each(function(){
+    if (customer_email.length != 0  && !(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(customer_email))) {
+        $('#customer_email').notify("Email không hợp lệ")
+        return true;
+    }
+
+    if(customer_tel.length != 0 && !(/(84|0[3|5|7|8|9])+([0-9]{8})\b/.test(customer_tel))) {
+        $('#customer_tel').notify("Số điện thoại không hợp lệ")
+        return true;
+    }
+
+    return false;
+}
+
+$("#select").on('click', '.row-select:not(.on-select)', function() {
+    $(".row-select").each(function() {
         $(this).removeClass("on-select");
     });
-
     id = $(this).attr("id");
     $(this).addClass("on-select");
     $("#chat_info").show();
@@ -261,84 +275,88 @@ $("#select").on('click','.row-select',function(){
     display();
 });
 
-$("#search").on('input',function(){
+$("#search").on('input', function() {
     s = $('#search').val();
     $("#select > *:not('b')").hide();
     var keys = Object.keys(history).reverse();
-    for(let i of keys){
+    for (let i of keys) {
         s = normalize(s);
         customer = normalize(history[i]['customer']['name']);
         staff = normalize(history[i]['staff']);
-        if(customer.includes(s) || staff.includes(s)) $("#" + history[i]['id']).show();
+        if (customer.includes(s) || staff.includes(s)) $("#" + history[i]['id']).show();
     }
 });
 
-$("#update-info").on('click',function(){
+$("#update-info").on('click', function() {
+    customer_email = history[id]['customer']['email'];
+    customer_tel = history[id]['customer']['tel'];
+    customer_address = history[id]['customer']['address'];
+    customer_company = history[id]['customer']['company'];
+    customer_note = history[id]['customer']['note'];
+
+    $("#customer_email").val(customer_email);
+    $("#customer_tel").val(customer_tel);
+    $("#customer_company").val(customer_company);
+    $("#customer_note").val(customer_note);
+    $("#customer_address").val(customer_address);
+    
     $.fancybox.open({
-        src  : '#edit_customer_info',
-        type : 'inline',
-        opts : {
+        src: '#edit_customer_info',
+        type: 'inline',
+        opts: {
             'buttons': false,
-	        'smallBtn': false,
+            'smallBtn': false,
         }
     });
 });
 
-$(".btn-cancel").on("click",function(){
+$(".btn-cancel").on("click", function() {
     $.fancybox.close();
 });
 
-$(".btn-save").on("click",function(){
+$(".btn-save").on("click", function() {
+
+    if (checkValid()) return;
     $.fancybox.close();
-    let customer_email = $('#customer_email').val();
-    let customer_tel = $('#customer_tel').val();
-    let customer_address = $('#customer_address').val();
-    let customer_company = $('#customer_company').val();
-    let customer_note = $('#customer_note').val();
+    let tmp;
 
-    if(customer_email!="") {
-        $("#customer-email").text(customer_email);
-        history[id]['customer']['email'] = customer_email;
-    }
+    tmp = customer_email.length!=0?customer_email:"Chưa có dữ liệu";
+    $("#customer-email").text(tmp);
+    history[id]['customer']['email'] = customer_email;
 
-    if(customer_tel!="") {
-        $("#customer-tel").text(customer_tel);
-        history[id]['customer']['tel'] = customer_tel;
-    }
+    tmp = customer_tel.length!=0?customer_tel:"Chưa có dữ liệu";
+    $("#customer-tel").text(tmp);
+    history[id]['customer']['tel'] = customer_tel;
 
-    if(customer_address!="") {
-        $("#customer-address").text(customer_address);
-        history[id]['customer']['address'] = customer_address;
-    }
+    tmp = customer_address.length!=0?customer_address:"Chưa có dữ liệu";
+    $("#customer-address").text(tmp);
+    history[id]['customer']['address'] = customer_address;
 
-    if(customer_company!="") {
-        $("#customer-company").text(customer_company);
-        history[id]['customer']['company'] = customer_company;
-    }
+    tmp = customer_company.length!=0?customer_company:"Chưa có dữ liệu";
+    $("#customer-company").text(tmp);
+    history[id]['customer']['company'] = customer_company;
 
-    if(customer_note!="") {
-        $("#customer-note").text(customer_note);
-        history[id]['customer']['note'] = customer_note;
-    }
+    tmp = customer_note.length!=0?customer_note:"Chưa có dữ liệu";
+    $("#customer-note").text(tmp);
+    history[id]['customer']['note'] = customer_note;
 
     $.ajax({
         url: "updateCustomerInfo.php",
         type: "post",
         data: {
-            Customer : JSON.stringify(history[id]["customer"]),
-            Id : id
+            Customer: JSON.stringify(history[id]["customer"]),
+            Id: id
         },
-        success:function(data) {
-            if(data=="success") $.notify("Cập nhật thành công","success");
+        success: function(data) {
+            if (data == "success") $.notify("Cập nhật thành công", "success");
             else $.notify("Cập nhật thất bại");
         }
     });
 });
 
 $("a").each(function() {
-   if( $(this).attr('href') == window.location.href) 
-   $(this).addClass('on-select');
+    if ($(this).attr('href') == window.location.href)
+        $(this).addClass('on-select');
 });
 
 getHistory();
-

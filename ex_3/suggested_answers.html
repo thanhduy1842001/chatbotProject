@@ -10,18 +10,18 @@
     <body>
         <div id="searchSA">
             <div>
-                <i class="fa fa-bars icon" id = "dropdown">
+                <i class="fa fa-bars" id = "dropdown">
                     <div class="dropdown-content">
                       <a href="http://localhost/chatbotProject/ex_5/">
                         <i class="fa fa-comments icon"></i>
                         Lịch sử chat
                       </a>
                       <a href="http://localhost/chatbotProject/ex_3/script.html">
-                        <i class="fa fa-film"></i>
-                        Kịch bản chat
+                        <i class="fa fa-film" style="margin-right:4px;"></i>
+                        Kịch bản Chatbot
                       </a>
                       <a class="on-select">
-                        <i class="fa fa-lightbulb-o icon"></i>
+                        <i class="fa fa-lightbulb-o" style="margin-right:10px;"></i>
                         Gợi ý trả lời
                       </a>
                     </div>
@@ -54,10 +54,10 @@
             <table id="tableSA">
                 <thead>
                     <tr>
-                        <th>Từ khóa</th>
-                        <th>Gợi ý trả lời</th>
-                        <th>Chỉnh sửa</th>
-                        <th>Xóa</th>
+                        <th style="width:15%;">Từ khóa</th>
+                        <th style="width:75%;">Gợi ý trả lời</th>
+                        <th style="width:5%;">Chỉnh sửa</th>
+                        <th style="width:5%;">Xóa</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -65,15 +65,15 @@
         </div>
         <div id="editSA">
             <label><b>Chỉnh sửa gợi ý trả lời</b></label>
-            <input id = "edit_keyword" type="text" class="form-control" name="edit_keyword" placeholder="Nhập từ khóa">
-            <textarea id = "edit_answer" class="form-control" name="edit_keyword" placeholder="Nhập câu trả lời"></textarea>
+            <input id = "edit_keyword" type="text" class="form-control" name="edit_keyword" placeholder="Nhập từ khóa" title="Từ khóa">
+            <textarea id = "edit_answer" class="form-control" name="edit_keyword" placeholder="Nhập câu trả lời" title="Câu trả lời"></textarea>
             <button class="btn btn-primary btn-save">Lưu</button>
             <button class="btn btn-secondary btn-cancel">Hủy</button>
         </div>
         <div id="addSA">
             <label><b>Thêm gợi ý trả lời</b></label>
-            <input id = "add_keyword" type="text" class="form-control" name="edit_keyword" placeholder="Nhập từ khóa">
-            <textarea id = "add_answer" class="form-control" name="edit_keyword" placeholder="Nhập câu trả lời"></textarea>
+            <input id = "add_keyword" type="text" class="form-control" name="edit_keyword" placeholder="Nhập từ khóa" title="Từ khóa">
+            <textarea id = "add_answer" class="form-control" name="edit_keyword" placeholder="Nhập câu trả lời" title="Câu trả lời"></textarea>
             <button class="btn btn-primary btn-save">Lưu</button>
             <button class="btn btn-secondary btn-cancel">Hủy</button>
         </div>
