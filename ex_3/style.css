@@ -258,6 +258,62 @@ th {
   padding: 10px 20px;
 }
 
+#update_timeout_form {
+  position: fixed;
+  display: none;
+  width: 300px;
+  padding: 5px;
+  background: #262626;
+  border-style: groove;
+  border-radius: 8px;
+  left: calc(50% - 150px);
+  text-align: center;
+  top: calc(50% - 180px);
+  padding: 10px 20px;
+}
+
+#update_send_form {
+  position: fixed;
+  display: none;
+  width: 300px;
+  padding: 5px;
+  background: #262626;
+  border-style: groove;
+  border-radius: 8px;
+  left: calc(50% - 150px);
+  text-align: center;
+  top: calc(50% - 180px);
+  padding: 10px 20px;
+}
+
+#update_receive_form {
+  position: fixed;
+  display: none;
+  width: 300px;
+  padding: 5px;
+  background: #262626;
+  border-style: groove;
+  border-radius: 8px;
+  left: calc(50% - 150px);
+  text-align: center;
+  top: calc(50% - 180px);
+  padding: 10px 20px;
+}
+
+#update_keyword_form {
+  position: fixed;
+  display: none;
+  width: 300px;
+  padding: 5px;
+  background: #262626;
+  border-style: groove;
+  border-radius: 8px;
+  left: calc(50% - 150px);
+  text-align: center;
+  top: calc(50% - 180px);
+  padding: 10px 20px;
+}
+
 .form-control {
   display: block;
   color: white;
@@ -325,7 +381,7 @@ textarea {
 }
 
 #searchSA {
-  width: 340px;
+  width: 230px;
   margin-right: 10px;
   background-color: #36404a;
   padding: 5px 10px;
@@ -444,4 +500,17 @@ ul {
 
 .error_input {
   background-color: #fedede;
+}
+
+#send{
+  margin-top: 5px;
+}
+
+.setting_table{
+  margin-top: 10px;
+  margin-right: 5px;
+}
+
+.add{
+  cursor: pointer;
 }

@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <title>Chatbot - Admin</title>
+        <meta charset="UTF-8">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+        <link rel="stylesheet" href="jquery.orgchart.css">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css"/>
+    </head>
+    <body>
+        <div id="searchSA">
+            <div id = "task_bar">
+                <i class="fa fa-bars" id = "dropdown">
+                    <div class="dropdown-content">
+                      <a href="http://localhost/chatbotProject/ex_5/">
+                        <i class="fa fa-comments icon"></i>
+                        Lịch sử chat
+                      </a>
+                      <a class="on-select">
+                        <i class="fa fa-film" style="margin-right:4px;"></i>
+                        Kịch bản Chatbot
+                      </a>
+                      <a href="http://localhost/chatbotProject/ex_3/suggested_answers.html">
+                        <i class="fa fa-lightbulb-o" style="margin-right:10px;"></i>
+                        Gợi ý trả lời
+                      </a>
+                      <a href="http://localhost/chatbotProject/ex_3/setting.html">
+                        <i class="fa fa-cog" style="margin-right:6px;"></i>
+                        Cài đặt
+                      </a>
+                    </div>
+                </i>
+                <b>Cài đặt Chatbot:</b>
+            </div>
+            <div id="features">
+                <button id="send">
+                    <i class="fa fa-share"></i>
+                    Email gửi thông báo
+                </button>
+                <button id="receive">
+                    <i class="fa fa-reply"></i>
+                    Email nhận thông báo
+                </button>
+                <button id="keyword">
+                    <i class="fa fa-key"></i>
+                    Từ khóa thông báo
+                </button>
+                <button id="update_timeout">
+                    <i class="fa fa-clock-o"></i>
+                    Chat timeout
+                </button>
+            </div>
+        </div>
+        <div id = "receive_table" style="display:none;" class="setting_table">
+            <b>Danh sách các email nhận thông báo:</b>
+            <i class="fa fa-plus-circle add" title="Thêm email mới"></i>
+            <table id="table_receive">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Email</th>
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id = "keyword_table" style="display:none;" class="setting_table">
+            <b>Danh sách các từ khóa thông báo:</b>
+            <i class="fa fa-plus-circle add" title="Thêm từ khóa mới"></i>
+            <table id="table_keyword">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Từ khóa thông báo</th>
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="update_timeout_form" style="display:none;">
+            <label><b>Timeout (đơn vị: giây)</b></label>
+            <input id = "timeout" type="number" class="form-control">
+            <button class="btn btn-primary btn-save">Lưu</button>
+            <button class="btn btn-secondary btn-cancel">Hủy</button>
+        </div>
+        <div id="update_send_form" style="display:none;">
+            <label><b>Email gửi thông báo</b></label>
+            <input id = "email_send" type="text" class="form-control" title="Email">
+            <input id = "password" type="text" class="form-control" title="Mật khẩu">
+            <button class="btn btn-primary btn-save">Lưu</button>
+            <button class="btn btn-secondary btn-cancel">Hủy</button>
+        </div>
+        <div id="update_receive_form" style="display:none;">
+            <label><b>Thêm email nhận thông báo</b></label>
+            <input id = "email_receive" type="text" class="form-control" placeholder="Hãy nhập địa chỉ email">
+            <button class="btn btn-primary btn-save">Lưu</button>
+            <button class="btn btn-secondary btn-cancel">Hủy</button>
+        </div>
+        <div id="update_keyword_form" style="display:none;">
+            <label><b>Thêm từ khóa thông báo</b></label>
+            <input id = "new_keyword" type="text" class="form-control" placeholder="Hãy nhập từ khóa">
+            <button class="btn btn-primary btn-save">Lưu</button>
+            <button class="btn btn-secondary btn-cancel">Hủy</button>
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+        <script type="text/javascript" src="jquery.orgchart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+        <script src="setting.js"></script>
+    </body>
+</html>

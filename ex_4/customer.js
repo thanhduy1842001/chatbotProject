@@ -79,7 +79,7 @@ $(function() {
 
     function connect() {
         connection = new WebSocket("ws://localhost:1337");
-        // connection = new WebSocket("wss://e78f-14-187-113-141.ap.ngrok.io");
+        // connection = new WebSocket("wss://914e-183-80-109-14.ap.ngrok.io");
 
         connection.onopen = function() {
             //first we want users to enter their names
@@ -383,12 +383,8 @@ $(function() {
     });
 
     $("input, textarea").each(function() {
-        $(this).focusin(function() {
+        $(this).on("focusin", function() {
             $(this).removeClass("error-input");
-            $(this).addClass("change-input");
-        });
-        $(this).focusout(function() {
-            $(this).removeClass("change-input");
         });
     });
 
@@ -460,14 +456,6 @@ $(function() {
         $.fancybox.open({
             src: src
         });
-    });
-
-    $("#chatbox").on('focusout', 'input', function(event) {
-        $(this).removeClass('change-input');
-    });
-
-    $("#chatbox").on('focusin', 'input', function(event) {
-        $(this).addClass('change-input');
     });
 
     setInterval(function() { // typing timeout

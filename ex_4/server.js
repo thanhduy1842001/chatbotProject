@@ -13,10 +13,38 @@ con.connect();
 var script;
 
 // Chat timeout
-const Timeout = 600; // 10 minutes
+var setting;
+var nodemailer = require("nodemailer");
+var transporter;
+var mailOptions;
+
+
+function updateSetting(){
+    con.query("SELECT * FROM setting", function(err, result) {
+        if (err) throw err;
+        setting = result[0];
+        setting["email_receive"] = JSON.parse(setting["email_receive"]);
+        setting["keyword"] = JSON.parse(setting["keyword"]);
+        // connect to email
+        transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: setting['email_send'],
+                pass: setting['password']
+            }
+        });
+        
+        mailOptions = {
+            from: setting['email_send'],
+            to: setting['email_receive'],
+            subject: "",
+            text: ""
+        };
+    });
+}
 
 function updateScript() {
-    con.query("SELECT scenario_id, content, type_id, url, image, next_jump, parent_id FROM scenario", function(err, result, fields) {
+    con.query("SELECT scenario_id, content, type_id, url, image, next_jump, parent_id FROM scenario", function(err, result) {
         if (err) throw err;
         script = result;
     });
@@ -24,6 +52,7 @@ function updateScript() {
 }
 
 updateScript();
+updateSetting();
 
 function removeVietnameseTones(str) {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
@@ -50,24 +79,6 @@ function removeVietnameseTones(str) {
     str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\"|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
     return str;
 }
-
-// Connect to email
-var nodemailer = require("nodemailer");
-var transporter = nodemailer.createTransport({
-    service: "yahoo",
-    auth: {
-        user: "duynguyen1842001@yahoo.com",
-        pass: "tkskszlprorucsmi"
-    }
-});
-
-var mailOptions = {
-    from: "duynguyen1842001@yahoo.com",
-    to: "thanhduynguyen1842001@gmail.com",
-    subject: "",
-    text: ""
-};
-
 
 // Global variable
 var admin = null;
@@ -104,12 +115,10 @@ wsServer.on("request", function(request) {
 
     function sendEmail(id) {
         var pos;
-        var key_word = ["mua dien thoai", "mua tv", "mua may lanh"];
-        var check = false;
         for (let i = 0; i < history[historyName].length; i++) {
             var message = history[historyName][i].text;
             message = removeVietnameseTones(message).toLowerCase();
-            for (let w of key_word) {
+            for (let w of setting["keyword"]) {
                 if (message.includes(w)) {
                     mailOptions.subject = "Notification ";
                     mailOptions.subject += "of chat have id: " + id.toString();
@@ -124,11 +133,10 @@ wsServer.on("request", function(request) {
                         if (error) console.log(error);
                         else console.log("Email sent: " + info.response);
                     });
+                    return;
                 }
             }
         }
-        if (historyName != "Chatbot - " + from) delete history[historyName];
-        delete history["Chatbot - " + from];
     }
 
     function reply(message) {
@@ -205,6 +213,9 @@ wsServer.on("request", function(request) {
         }
 
         if (admin) admin.send("new_chat");
+        customer = false;
+        if (historyName != "Chatbot - " + from) delete history[historyName];
+        delete history["Chatbot - " + from];
     }
 
     var connection = request.accept(null, request.origin);
@@ -245,7 +256,7 @@ wsServer.on("request", function(request) {
                     }
                     break;
                 default:
-                    timeout = Timeout; // reset timeout when received message from customer
+                    timeout = setting['timeout']; // reset timeout when received message from customer
                     if (message.utf8Data.includes("from: ")) {
                         from = message.utf8Data.substring(7);
                         if (message.utf8Data[0] == "s") staff.add(from);
@@ -351,8 +362,8 @@ wsServer.on("request", function(request) {
             timeout-=1;
             switch(timeout){
                 case 0:
+                    customer['note'] = "Hệ thống tự động kết thúc cuộc chat vì sau 5 phút không nhận được tin nhắn mới từ khách hàng"; 
                     end_chat_process();
-                    customer = false;
                     break;
                 case 60:
                     clients[from].sendUTF(JSON.stringify({

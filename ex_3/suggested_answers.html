@@ -1,4 +1,4 @@
-<html lang="en">
+<html>
     <head>
         <title>Chatbot - Admin</title>
         <meta charset="UTF-8">
@@ -23,6 +23,10 @@
                       <a class="on-select">
                         <i class="fa fa-lightbulb-o" style="margin-right:10px;"></i>
                         Gợi ý trả lời
+                      </a>
+                      <a href="http://localhost/chatbotProject/ex_3/setting.html">
+                        <i class="fa fa-cog" style="margin-right:6px;"></i>
+                        Cài đặt
                       </a>
                     </div>
                   </i>
@@ -51,7 +55,7 @@
         </div>
         <div class="listSA">
             <b>Danh sách các gợi ý trả lời:</b>
-            <table id="tableSA">
+            <table id="table">
                 <thead>
                     <tr>
                         <th style="width:15%;">Từ khóa</th>
@@ -63,14 +67,14 @@
                 <tbody></tbody>
             </table>
         </div>
-        <div id="editSA">
+        <div id="editSA" class="box">
             <label><b>Chỉnh sửa gợi ý trả lời</b></label>
             <input id = "edit_keyword" type="text" class="form-control" name="edit_keyword" placeholder="Nhập từ khóa" title="Từ khóa">
             <textarea id = "edit_answer" class="form-control" name="edit_keyword" placeholder="Nhập câu trả lời" title="Câu trả lời"></textarea>
             <button class="btn btn-primary btn-save">Lưu</button>
             <button class="btn btn-secondary btn-cancel">Hủy</button>
         </div>
-        <div id="addSA">
+        <div id="addSA" class="box">
             <label><b>Thêm gợi ý trả lời</b></label>
             <input id = "add_keyword" type="text" class="form-control" name="edit_keyword" placeholder="Nhập từ khóa" title="Từ khóa">
             <textarea id = "add_answer" class="form-control" name="edit_keyword" placeholder="Nhập câu trả lời" title="Câu trả lời"></textarea>

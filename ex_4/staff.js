@@ -166,7 +166,7 @@ $(function() {
     // open connection
     function connect() {
         connection = new WebSocket("ws://localhost:1337");
-        // connection = new WebSocket("wss://e78f-14-187-113-141.ap.ngrok.io");
+        // connection = new WebSocket("wss://914e-183-80-109-14.ap.ngrok.io");
 
         connection.onopen = function() {
             //first we want users to enter their names
@@ -304,7 +304,7 @@ $(function() {
     function addMessageAvatar(author, message, dt) {
         var avatar;
         if (author == "Chatbot") avatar = `<img src="https://livechat.pavietnam.vn/images/conong.png" class="avatar">`;
-        else avatar = staff_avatar;
+        else avatar = customer_avatar;
         var content = $('#chatbox');
 
         var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
@@ -312,10 +312,10 @@ $(function() {
 
         (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
 
-        if (author != myName) {
+        if (author != myName && author!="Chatbot") {
             content.append(`
             <div class="row_customer">
-                ${avatar}
+                ${staff_avatar}
                 <div class="chat-customer-message left"  style="margin-top:20px;">
                     <b> ${author}</b>
                     <div style="white-space: pre-line;">${message}</div>
@@ -336,7 +336,7 @@ $(function() {
                       ${time}
                   </div>
               </div>
-              ${customer_avatar}
+              ${avatar}
           </div>`);
         }
         content.scrollTop(content[0].scrollHeight);
@@ -350,7 +350,7 @@ $(function() {
 
         (dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes());
 
-        if (author != myName) {
+        if (author != myName && author!="Chatbot") {
             content.append(`
           <div class="row_customer">
               <div class="chat-customer-message" style="margin-left:60px">
