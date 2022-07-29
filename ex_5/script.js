@@ -20,8 +20,7 @@ function connect() {
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-var customer;
-var staff;
+var customer, staff;
 var date;
 var history = {};
 var matches;
@@ -29,12 +28,7 @@ var id;
 var acronym;
 var randomColor;
 var staff_avatar;
-var customer_avatar;
-let customer_email;
-let customer_tel;
-let customer_address;
-let customer_company;
-let customer_note;
+var customer_avatar, customer_email, customer_tel, customer_address, customer_company, customer_note;
 
 $("#chatbox").hide();
 connect();

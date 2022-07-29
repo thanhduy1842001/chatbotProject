@@ -36,10 +36,12 @@ function updateSetting(){
         
         mailOptions = {
             from: setting['email_send'],
-            to: setting['email_receive'],
+            to: setting['email_receive'].toString(),
             subject: "",
             text: ""
         };
+
+        console.log((new Date()) + " Setting was updated");
     });
 }
 
@@ -115,6 +117,7 @@ wsServer.on("request", function(request) {
 
     function sendEmail(id) {
         var pos;
+        loop:
         for (let i = 0; i < history[historyName].length; i++) {
             var message = history[historyName][i].text;
             message = removeVietnameseTones(message).toLowerCase();
@@ -133,10 +136,12 @@ wsServer.on("request", function(request) {
                         if (error) console.log(error);
                         else console.log("Email sent: " + info.response);
                     });
-                    return;
+                    break loop;
                 }
             }
         }
+        if (historyName != "Chatbot - " + from) delete history[historyName];
+        delete history["Chatbot - " + from];
     }
 
     function reply(message) {
@@ -214,8 +219,6 @@ wsServer.on("request", function(request) {
 
         if (admin) admin.send("new_chat");
         customer = false;
-        if (historyName != "Chatbot - " + from) delete history[historyName];
-        delete history["Chatbot - " + from];
     }
 
     var connection = request.accept(null, request.origin);
@@ -246,6 +249,9 @@ wsServer.on("request", function(request) {
                             type: "update_SA",
                         }));
                     }
+                    break;
+                case "update_setting":
+                    updateSetting();
                     break;
                 case "typing":
                     if (from !== false && to != -1 && to != "Chatbot") {

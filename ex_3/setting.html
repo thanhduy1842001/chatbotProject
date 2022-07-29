@@ -81,27 +81,28 @@
             </table>
         </div>
         <div id="update_timeout_form" style="display:none;">
-            <label><b>Timeout (đơn vị: giây)</b></label>
-            <input id = "timeout" type="number" class="form-control">
+            <label><b>Timeout (đơn vị: giây)</b></label><br>
+            <input id = "timeout" type="number" class="form-control" title="Khi hệ thống không nhận được tin nhắn mới từ khách hàng
+quá khoảng thời gian này, cuộc chat sẽ tự động kết thúc.">
             <button class="btn btn-primary btn-save">Lưu</button>
             <button class="btn btn-secondary btn-cancel">Hủy</button>
         </div>
         <div id="update_send_form" style="display:none;">
             <label><b>Email gửi thông báo</b></label>
             <input id = "email_send" type="text" class="form-control" title="Email">
-            <input id = "password" type="text" class="form-control" title="Mật khẩu">
+            <input id = "password" type="password" class="form-control" title="Mật khẩu">
             <button class="btn btn-primary btn-save">Lưu</button>
             <button class="btn btn-secondary btn-cancel">Hủy</button>
         </div>
         <div id="update_receive_form" style="display:none;">
             <label><b>Thêm email nhận thông báo</b></label>
-            <input id = "email_receive" type="text" class="form-control" placeholder="Hãy nhập địa chỉ email">
+            <input id = "email_receive" type="text" class="form-control" placeholder="Hãy nhập địa chỉ email" title="Chỉ chấp nhận địa chỉ gmail">
             <button class="btn btn-primary btn-save">Lưu</button>
             <button class="btn btn-secondary btn-cancel">Hủy</button>
         </div>
         <div id="update_keyword_form" style="display:none;">
             <label><b>Thêm từ khóa thông báo</b></label>
-            <input id = "new_keyword" type="text" class="form-control" placeholder="Hãy nhập từ khóa">
+            <input id = "new_keyword" type="text" class="form-control" placeholder="Hãy nhập từ khóa" title="Nhập từ khóa không bỏ dấu">
             <button class="btn btn-primary btn-save">Lưu</button>
             <button class="btn btn-secondary btn-cancel">Hủy</button>
         </div>
