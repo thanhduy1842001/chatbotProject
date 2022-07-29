@@ -165,8 +165,8 @@ $(function() {
 
     // open connection
     function connect() {
-        connection = new WebSocket("ws://localhost:1337");
-        // connection = new WebSocket("wss://914e-183-80-109-14.ap.ngrok.io");
+        // connection = new WebSocket("ws://localhost:1337");
+        connection = new WebSocket("wss://fe6a-42-113-79-63.ap.ngrok.io");
 
         connection.onopen = function() {
             //first we want users to enter their names
@@ -487,6 +487,9 @@ $(function() {
         $("#up_down").removeClass("fa-arrow-down");
         $("#icon_chat_container").show();
         $("#body").hide();
+        $("#up_down").hide();
+        content.hide();
+        
     });
 
     setInterval(function() { // typing timeout
