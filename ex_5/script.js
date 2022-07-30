@@ -29,6 +29,7 @@ var acronym;
 var randomColor;
 var staff_avatar;
 var customer_avatar, customer_email, customer_tel, customer_address, customer_company, customer_note;
+var pos = urlParams.has('pos') ? parseInt(urlParams.get('pos')) : -1;
 
 $("#chatbox").hide();
 connect();
@@ -77,7 +78,7 @@ function generateAvatar(name, id, color) {
     $(id).css('background-color', color);
 }
 
-function addMessageAvatar(author, message, dt, i, pos) {
+function addMessageAvatar(author, message, dt, i) {
     var content = $('#chatbox');
 
     var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
@@ -114,10 +115,10 @@ function addMessageAvatar(author, message, dt, i, pos) {
         </div>`);
     }
 
-    // if(i==pos || pos==-1) content.scrollTop(content[0].scrollHeight);
+    if(i==pos || pos==-1) content.scrollTop(content[0].scrollHeight);
 }
 
-function addMessage(author, message, dt, i, pos) {
+function addMessage(author, message, dt, i) {
     var content = $('#chatbox');
 
     var time = (dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours()) + ":" +
@@ -149,23 +150,22 @@ function addMessage(author, message, dt, i, pos) {
         </div>`);
     }
 
-    // if(i==pos || pos==-1) content.scrollTop(content[0].scrollHeight);
+    if(i==pos || pos==-1) content.scrollTop(content[0].scrollHeight);
 }
 
 function display() {
-    var pos = urlParams.has('pos') ? parseInt(urlParams.get('pos')) : -1;
     customer = history[id]['customer']['name'];
     staff = history[id]['staff'];
 
     $('#chatbox').empty();
     for (let [i, message] of history[id]['json'].entries()) {
         if (i == 0 || message.author != history[id]['json'][i - 1].author)
-            addMessageAvatar(message.author, message.text, new Date(message.time), i, pos);
+            addMessageAvatar(message.author, message.text, new Date(message.time), i);
         else
-            addMessage(message.author, message.text, new Date(message.time), i, pos);
+            addMessage(message.author, message.text, new Date(message.time), i);
     }
     $('#chatbox').append("<div style='margin-bottom:5px'><div>");
-    $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+    pos = -1;
 
     customer_email = history[id]['customer']['email'];
     customer_tel = history[id]['customer']['tel'];
