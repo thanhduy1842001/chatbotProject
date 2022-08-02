@@ -70,6 +70,7 @@ function removeVietnameseTones(str) {
 }
 
 function normalize(str) {
+    str = str.replace(/\s+/g, ' ').trim();
     return removeVietnameseTones(str).toLowerCase();
 }
 
@@ -86,6 +87,25 @@ function findSA(msg) {
         }
     }
     if (check) $("#SA ul").append(`<li>Không tìm thấy gợi ý trả lời</li>`);
+}
+
+function checkValid(selector) {
+    let keyword = $(`#${selector}_keyword`).val();
+    let answer = $(`#${selector}_answer`).val();
+
+    if (keyword == "") {
+        $(`#${selector}_keyword`).notify("Từ khóa không thể để trống");
+        return true;
+    }
+
+    if (answer == "") {
+        $(`#${selector}_answer`).notify("Câu trả lời không thể để trống");
+        return true;
+    }
+
+    $(`#${selector}_keyword`).val(normalize(keyword));
+
+    return false;
 }
 
 $(document).on("ready", function() {
@@ -138,18 +158,7 @@ $(document).on("ready", function() {
     });
 
     $("#addSA .btn-save").on("click", function() {
-        let add_keyword = $('#add_keyword').val();
-        let add_answer = $('#add_answer').val();
-
-        if (add_keyword == "") {
-            $('#add_keyword').notify("Từ khóa không thể để trống");
-            return;
-        }
-
-        if (add_answer == "") {
-            $('#add_answer').notify("Câu trả lời không thể để trống");
-            return;
-        }
+        if(checkValid('add')) return;
 
         $.fancybox.close();
 
@@ -157,8 +166,8 @@ $(document).on("ready", function() {
             url: "insertSA.php",
             type: "post",
             data: {
-                keyword: add_keyword,
-                answer: add_answer
+                keyword:  $(`#add_keyword`).val(),
+                answer: $(`#add_answer`).val(),
             },
             success: function(data) {
                 console.log(data);
@@ -174,18 +183,7 @@ $(document).on("ready", function() {
     });
 
     $("#editSA .btn-save").on("click", function() {
-        let edit_keyword = $('#edit_keyword').val();
-        let edit_answer = $('#edit_answer').val();
-
-        if (edit_keyword == "") {
-            $('#edit_keyword').notify("Từ khóa không thể để trống");
-            return;
-        }
-
-        if (edit_answer == "") {
-            $('#edit_answer').notify("Câu trả lời không thể để trống");
-            return;
-        }
+        if(checkValid('edit')) return;
 
         $.fancybox.close();
 
@@ -194,8 +192,8 @@ $(document).on("ready", function() {
             type: "post",
             data: {
                 id: SA[index]['id'],
-                keyword: edit_keyword,
-                answer: edit_answer
+                keyword: $(`#edit_keyword`).val(),
+                answer: $(`#edit_answer`).val()
             },
             success: function(data) {
                 if (data == "success") $.notify("Chỉnh sửa thành công", "success");

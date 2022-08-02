@@ -18,8 +18,11 @@ function connect() {
     };
 }
 
+// get parameters of url
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
+var pos = urlParams.has('pos') ? parseInt(urlParams.get('pos')) : -1;
+
 var customer, staff;
 var date;
 var history = {};
@@ -29,7 +32,6 @@ var acronym;
 var randomColor;
 var staff_avatar;
 var customer_avatar, customer_email, customer_tel, customer_address, customer_company, customer_note;
-var pos = urlParams.has('pos') ? parseInt(urlParams.get('pos')) : -1;
 
 $("#chatbox").hide();
 connect();

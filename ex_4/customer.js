@@ -78,8 +78,8 @@ $(function() {
     // open connection
 
     function connect() {
-        connection = new WebSocket("ws://localhost:1337");
-        // connection = new WebSocket("wss://fe6a-42-113-79-63.ap.ngrok.io");
+        // connection = new WebSocket("ws://localhost:1337");
+        connection = new WebSocket("wss://eba2-115-78-131-187.ap.ngrok.io");
 
         connection.onopen = function() {
             //first we want users to enter their names
